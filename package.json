@@ -4,8 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    "dev": "nodemon ./server/src/app.js --exec babel-node"
+    "test": "jest ./test/app.test.js",
+    "test:coverage": "jest --coverage --colors",
+    "build": "babel server/src -d server/dist",
+    "start": "node ./server/dist/app.js",
+    "dev": "nodemon ./server/src/app.js --exec babel-node",
+    "lint": "eslint --fix src/**/*.js"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   },
   "repository": {
     "type": "git",
@@ -28,6 +38,8 @@
     "@babel/core": "^7.9.0",
     "@babel/node": "^7.8.7",
     "@babel/preset-env": "^7.9.5",
-    "jest": "^25.3.0"
+    "@babel/register": "^7.9.0",
+    "jest": "^25.3.0",
+    "supertest": "^4.0.2"
   }
 }
