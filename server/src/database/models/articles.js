@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     type: {
-      type: DataTypes.ENUM,
+      type: DataTypes.ENUM('draft', 'published'),
+      defaultValue: 'draft',
       allowNull: false
     }
   }, {});

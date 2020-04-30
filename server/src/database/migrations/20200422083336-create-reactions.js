@@ -18,9 +18,7 @@ module.exports = {
     },
     type: {
       allowNull: false,
-      type: Sequelize.ENUM,
-      values: ['like', 'dislike', ''],
-      defaultValue: ''
+      type: Sequelize.ENUM('like', 'dislike'),
     },
     createdAt: {
       allowNull: false,
