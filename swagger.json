@@ -1,0 +1,144 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "authors-haven",
+    "description": "Authors-haven is an online publishing platform ",
+    "contact": {}
+  },
+  "schemes": ["https", "http"],
+  "host": "",
+  "basePath": "/api/v1",
+  "securityDefinitions": {
+    "x-access": {
+      "description": "Standard Authorization header using the bearer scheme. Example: \"bearer {token}\"",
+      "type": "apiKey",
+      "name": "x-access-token",
+      "in": "header"
+    },
+    "Bearer": {
+      "description": "Sends the bearer token in the header in the format \"Bearer {token}\"",
+      "type": "apiKey",
+      "name": "authorization",
+      "in": "header"
+    }
+  },
+  "consumes": ["application/json"],
+  "tag": [
+    {
+      "name": "Auth",
+      "description": "Endpoints for Authentication"
+    }
+  ],
+  "paths": {
+    "/auth/signup": {
+      "post": {
+        "description": "User Sign Up",
+        "summary": "This endpoint registers users into the app",
+        "tags": ["Auth"],
+        "produces": ["application/json"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "This is the request body object containing user  basic information",
+            "schema": {
+              "$ref": "#/requestBody/signup"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Invalid input field"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/signin": {
+      "post": {
+        "description": "A user can sign in",
+        "summary": "This endpoint logs users into the app",
+        "tags": ["Auth"],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "The request body for the signin endpoint",
+            "schema": {
+              "$ref": "#/requestBody/signin"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    } 
+  },
+  "requestBody": {
+    "signup": {
+      "title": "Signup Request",
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "description": "First name of the user",
+          "type": "string"
+        },
+        "lastName": {
+          "description": "Last name of the user",
+          "type": "string"
+        },
+        "email": {
+          "description": "email of the user",
+          "type": "string"
+        },
+        "password": {
+          "description": "The Password of the user",
+          "type": "string"
+        }
+      },
+      "example": {
+        "firstName": "John",
+        "lastName": "Doe",
+        "email": "john@gmail.com",
+        "password": "secretlock"
+      }
+    },
+    "signin": {
+      "type": "object",
+      "required": ["email", "password"],
+      "properties": {
+        "email": {
+          "description": "User email",
+          "type": "string"
+        },
+        "password": {
+          "description": "User password",
+          "type": "string"
+        }
+      },
+      "example": {
+        "email": "user@example.com",
+        "password": "keeplearning"
+      }
+    }
+  }
+}
+

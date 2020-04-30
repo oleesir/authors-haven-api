@@ -30,8 +30,7 @@ module.exports = {
     },
     type: {
       allowNull: false,
-      type: Sequelize.ENUM,
-      values: ['draft', 'published'],
+      type: Sequelize.ENUM('draft', 'published'),
       defaultValue: 'draft'
     },
     createdAt: {
