@@ -1,5 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
   const Reactions = sequelize.define('Reactions', {
+    id: {
+      allowNull: false,
+      primaryKey: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4
+    },
     articleId: {
       type: DataTypes.UUID,
       allowNull: false

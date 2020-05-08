@@ -90,7 +90,39 @@
           }
         }
       }
-    } 
+    },
+    "/auth/verification":{
+      "get": {
+        "description": "verify email token",
+        "summary": "This endpoint verify users in the app",
+        "tags": ["Auth"],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "The request body for the verification endpoint",
+            "schema": {
+              "$ref": "#/requestBody/verification"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict error"
+          }
+        }
+      }
+    }
   },
   "requestBody": {
     "signup": {
@@ -137,6 +169,24 @@
       "example": {
         "email": "user@example.com",
         "password": "keeplearning"
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": ["token", "email"],
+      "properties": {
+        "token": {
+          "description": "User token",
+          "type": "string"
+        },
+        "email": {
+          "description": "User email",
+          "type": "string"
+        }
+      },
+      "example": {
+        "token":"qgw6etr58gh598gh",
+        "email": "user@example.com"
       }
     }
   }

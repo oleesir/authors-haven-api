@@ -15,10 +15,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get('/', (req, res) => res.status(200).json({ status: 'success', message: 'Authors Haven API' }));
 
 
-app.get('*', (req, res) => res.status(404).send({
-  status: 'failure',
-  error: 'Not found'
-}));
+app.get('*', (req, res) => res.status(404).json({ status: 'failure', error: 'Not found' }));
 
 app.use(sendError);
 

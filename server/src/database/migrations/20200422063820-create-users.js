@@ -23,6 +23,11 @@ module.exports = {
       type: Sequelize.STRING,
       allowNull: false
     },
+    isVerified: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
     role: {
       type: Sequelize.ENUM('user', 'admin', 'super-admin'),
       allowNull: false,
@@ -39,5 +44,5 @@ module.exports = {
       defaultValue: Sequelize.NOW
     }
   }),
-  down: (queryInterface) => queryInterface.dropTable('Users')
+  down: (queryInterface) => queryInterface.dropTable('Users', { cascade: true })
 };

@@ -7,6 +7,7 @@ jobs:
         environment:
           POSTGRES_USER: postgres
           POSTGRES_DB: authors_haven_test
+          POSTGRES_PASSWORD: password
     steps:
       - checkout
       - restore_cache:

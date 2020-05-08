@@ -1,5 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
   const Followers = sequelize.define('Followers', {
+    id: {
+      allowNull: false,
+      primaryKey: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4
+    },
     userId: {
       type: DataTypes.UUID,
       allowNull: false
