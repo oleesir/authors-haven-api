@@ -1,10 +1,15 @@
-import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 
 const saltRounds = 10;
 
 module.exports = (sequelize, DataTypes) => {
   const Users = sequelize.define('Users', {
+    id: {
+      allowNull: false,
+      primaryKey: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4
+    },
     firstName: {
       type: DataTypes.STRING,
       allowNull: false
@@ -22,13 +27,23 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    isVerified: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
     role: {
       type: DataTypes.ENUM('user', 'admin', 'super-admin'),
       defaultValue: 'user',
       allowNull: false
     }
   }, {});
+
   Users.associate = (models) => {
+    Users.hasOne(models.EmailVerifications, {
+      foreignKey: 'userId',
+    });
+
     Users.hasMany(models.Articles, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
@@ -60,8 +75,6 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: 'CASCADE'
     });
   };
-
-  Users.beforeCreate((user) => user.id = uuidv4());
 
   Users.beforeCreate(async (user) => {
     const hash = await bcrypt.hash(user.password, saltRounds);

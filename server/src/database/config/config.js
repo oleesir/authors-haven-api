@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const {
-  DB_USER, DB_HOST, DB_PASSWORD, DB_NAME, DB_NAME_TEST, DATABASE_URL, DB_PORT, DB_DIALECT
+  DB_USER, DB_HOST, DB_PASSWORD, DB_NAME, DB_NAME_TEST, DATABASE_URL, DB_DIALECT
 } = process.env;
 
 
@@ -17,7 +17,7 @@ module.exports = {
     username: DB_USER || 'postgres',
     password: DB_PASSWORD || '',
     database: DB_NAME_TEST || 'authors_haven_test',
-    host: DB_PORT || 'localhost',
+    host: DB_HOST || 'localhost',
     dialect: DB_DIALECT || 'postgres'
   },
   production: {

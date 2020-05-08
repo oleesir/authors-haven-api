@@ -1,7 +1,13 @@
+/* eslint-disable */
 import '@babel/polyfill';
+import moment from 'moment';
 import request from 'supertest';
 import app from '../server/src/app';
-import db from '../server/src/database/models/index';
+import Mailer from '../server/src/helper/mailer';
+import model from '../server/src/database/models'
+
+const{ EmailVerifications  } = model;
+
 import {
   newUser,
   emptyUser,
@@ -20,15 +26,17 @@ import {
   emptyPasswordAuthUser,
   wrongEmail,
   wrongPassword,
-  wrongEmailAuthUser
+  wrongEmailAuthUser,
+  unexistingUserEmail,
+  invalidEmailToken
 } from './helper/testData';
 
 const URL = '/api/v1/auth';
 
 describe('AuthRoutes', () => {
-  afterAll(async () => {
-    await db.close();
-  });
+ let userId;
+ let userEmail;
+
   describe('SignupRoute', () => {
     it('should signup new user', (done) => {
       request(app)
@@ -36,15 +44,18 @@ describe('AuthRoutes', () => {
         .send(newUser)
         .expect(201)
         .end((err, res) => {
+          userId = res.body.data.id;
+          userEmail = res.body.data.email
           expect(res.status).toBe(201);
           expect(res.body.data).toHaveProperty('firstName');
           expect(res.body.data).toHaveProperty('lastName');
           expect(res.body.data).toHaveProperty('email');
-          expect(res.body.data).toHaveProperty('token');
+          expect(Mailer.send).toHaveBeenCalled();
           if (err) return done(err);
           done();
         });
     });
+
     it('should not register a new user with empty input fields', (done) => {
       request(app)
         .post(`${URL}/signup`)
@@ -208,6 +219,114 @@ describe('AuthRoutes', () => {
     });
   });
 
+  describe('Verification Routes', () => {
+    let userToken;
+    let userEmailVerification;
+    const fiveMinutesAgo = moment(Date.now()).subtract(5, 'minutes');
+   
+
+    beforeAll(async () => {
+      userEmailVerification = await EmailVerifications.findOne({
+        where: {
+          userId
+        }
+      });
+
+      userToken = userEmailVerification.token;
+
+      // expire token
+      await userEmailVerification.update({
+        expiresOn: fiveMinutesAgo
+      })
+    });
+
+
+    it(`should not verify a user with an expired token
+        and should create another token after deleting the previous one`, (done) => {
+      const previousToken = userEmailVerification.token;
+      expect(userEmailVerification.expiresOn).toEqual(new Date(fiveMinutesAgo));
+
+      request(app)
+        .get(`${URL}/verification?token=${userToken}&email=${userEmail}`)
+        .expect(404)
+        .end(async (err, res) => {
+          expect(res.body.error).toBe('sorry your token has expired');
+
+          // check that expiry and token are different
+          userEmailVerification = await EmailVerifications.findOne({
+            where: {
+              userId
+            }
+          });
+
+          userToken = userEmailVerification.token;
+
+          expect (userEmailVerification.expiresOn).not.toBe(new Date(fiveMinutesAgo));
+          expect (userToken).not.toBe(previousToken);
+
+          if (err) return done(err);
+          done();
+        });
+    });
+
+
+    it('should not verify a user with an invalid token', (done) => {
+      request(app)
+        .get(`${URL}/verification?token=${invalidEmailToken}&email=${userEmail}`)
+        .expect(404)
+        .end((err, res) => {
+          expect(res.body.error).toBe('email verification failed. Your token might be expired or invalid');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should verify a user with a valid verification token', (done) => {
+      request(app)
+        .get(`${URL}/verification?token=${userToken}&email=${userEmail}`)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body.message).toBe('email has been successfully verified');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not reverify a user who has already been verified', (done) => {
+      request(app)
+        .get(`${URL}/verification?token=${userToken}&email=${userEmail}`)
+        .expect(409)
+        .end((err, res) => {
+          expect(res.body.error).toBe('your email has been verified already');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not verify a user who does not exist on the platform', (done) => {
+      request(app)
+        .get(`${URL}/verification?token=${userToken}&email=${unexistingUserEmail}`)
+        .expect(404)
+        .end((err, res) => {
+          expect(res.body.error).toBe('user does not exist');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not verify a user who does not exist on the platform', (done) => {
+      request(app)
+        .get(`${URL}/verification?token=${userToken}&email=${unexistingUserEmail}`)
+        .expect(404)
+        .end((err, res) => {
+          expect(res.body.error).toBe('user does not exist');
+          if (err) return done(err);
+          done();
+        });
+    });
+  });
+
+
   describe('Login Routes', () => {
     it('should log in an existing user ', (done) => {
       request(app)
@@ -224,7 +343,6 @@ describe('AuthRoutes', () => {
           done();
         });
     });
-
 
     it('should not log in a user with empty email and password fields', (done) => {
       request(app)
@@ -271,10 +389,10 @@ describe('AuthRoutes', () => {
       request(app)
         .post(`${URL}/signin`)
         .send(wrongEmail)
-        .expect(401)
+        .expect(404)
         .end((err, res) => {
-          expect(res.status).toBe(401);
-          expect(res.body.error).toBe('email or password is incorrect');
+          expect(res.status).toBe(404);
+          expect(res.body.error).toBe('user does not exist');
           if (err) return done(err);
           done();
         });
