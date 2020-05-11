@@ -49,5 +49,23 @@ export default {
       .withMessage('password is required')
       .isLength({ min: 8, max: 15 })
       .withMessage('password should be between 8 to 15 characters'),
+  ],
+
+  forgotPasswordSchema: [
+    check('email')
+      .trim()
+      .exists()
+      .withMessage('email is required')
+      .isEmail()
+      .withMessage('enter a valid email address')
+      .customSanitizer(email => email.toLowerCase())
+  ],
+  resetPasswordSchema: [
+    check('password')
+      .trim()
+      .exists()
+      .withMessage('password is required')
+      .isLength({ min: 8, max: 15 })
+      .withMessage('password should be between 8 to 15 characters')
   ]
 };

@@ -122,6 +122,70 @@
           }
         }
       }
+    },
+    "/auth/forgotPassword":{
+      "post": {
+        "description": "retrive user password",
+        "summary": "This endpoint retrives users in the app",
+        "tags": ["Auth"],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "The request body for the verification endpoint",
+            "schema": {
+              "$ref": "#/requestBody/forgotPassword"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "400": {
+            "description": "bad request"
+          }
+        }
+      }
+    },
+    "/auth/resetPassword":{
+      "post": {
+        "description": "Enables a user to request a password reset",
+        "summary": "This endpoint resets password in the app",
+        "tags": ["Auth"],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "The request body for the verification endpoint",
+            "schema": {
+              "$ref": "#/requestBody/resetPassword"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "400": {
+            "description": "bad request"
+          }
+        }
+      }
     }
   },
   "requestBody": {
@@ -172,6 +236,37 @@
       }
     },
     "verification": {
+      "type": "object",
+      "required": ["token", "email"],
+      "properties": {
+        "token": {
+          "description": "User token",
+          "type": "string"
+        },
+        "email": {
+          "description": "User email",
+          "type": "string"
+        }
+      },
+      "example": {
+        "token":"qgw6etr58gh598gh",
+        "email": "user@example.com"
+      }
+    },
+    "forgotPassword": {
+      "type": "object",
+      "required": ["email"],
+      "properties": {
+        "email": {
+          "description": "User email",
+          "type": "string"
+        }
+      },
+      "example": {
+        "email": "user@example.com"
+      }
+    },
+    "resetPassword": {
       "type": "object",
       "required": ["token", "email"],
       "properties": {

@@ -36,7 +36,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM('user', 'admin', 'super-admin'),
       defaultValue: 'user',
       allowNull: false
-    }
+    },
+    passwordResetToken: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    passwordTokenExpiry: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
   }, {});
 
   Users.associate = (models) => {
@@ -77,6 +85,12 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   Users.beforeCreate(async (user) => {
+    const hash = await bcrypt.hash(user.password, saltRounds);
+    user.password = hash;
+    return user;
+  });
+
+  Users.beforeUpdate(async (user) => {
     const hash = await bcrypt.hash(user.password, saltRounds);
     user.password = hash;
     return user;

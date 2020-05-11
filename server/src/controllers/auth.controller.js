@@ -1,8 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import '@babel/polyfill';
 import cryptoRandomString from 'crypto-random-string';
+import { Op } from 'sequelize';
+import moment from 'moment';
 import models from '../database/models';
-import sendVerificationEmail from '../helper/sendMail';
+import { sendVerificationEmail, sendForgotPasswordEmail, sendResetPasswordEmail } from '../helper/sendMail';
 import comparePassword from '../helper/comparePassword';
 import generateToken from '../helper/generateToken';
 import getSignupUserData from '../utils/user.utils';
@@ -126,4 +128,74 @@ const verifyEmailToken = async (req, res) => {
   }
 };
 
-export { signupUser, signinUser, verifyEmailToken };
+/**
+   * forgot password
+   * @method forgotPassword
+   * @param {object} req
+   * @param {object} res
+   * @returns {(function|object)} Function next() or JSON object
+   */
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  const foundUser = await Users.findOne({ where: { email } });
+
+  if (!foundUser) return res.status(404).json({ status: 'failure', error: 'This user is not registered on the app, please signup' });
+
+  if (foundUser) {
+    const addTenMinutes = moment(Date.now()).add(10, 'minutes');
+    const expire = new Date(addTenMinutes);
+    const token = cryptoRandomString({ length: 16 });
+
+    await Users.update({
+      passwordResetToken: token,
+      passwordTokenExpiry: expire
+    }, { where: { id: foundUser.id } });
+
+    await sendForgotPasswordEmail(foundUser.email, token);
+
+    return res.status(202).json({ status: 'success', message: 'A reset token has been sent to your email address' });
+  }
+};
+
+/**
+   * reset password
+   * @method resetPassword
+   * @param {object} req
+   * @param {object} res
+   * @returns {(function|object)} Function next() or JSON object
+   */
+const resetPassword = async (req, res) => {
+  const timeNow = moment();
+  const { password } = req.body;
+  const { token } = req.query;
+
+  const foundUser = await Users.findOne({
+    where: {
+      passwordResetToken: token,
+      passwordTokenExpiry: {
+        [Op.gt]: timeNow
+      }
+    }
+  });
+
+  if (!foundUser) return res.status(400).json({ status: 'failure', error: 'password reset token is invalid or has expired' });
+
+  await foundUser.update({
+    password,
+    passwordResetToken: null,
+    passwordTokenExpiry: null
+  });
+
+  await sendResetPasswordEmail(foundUser.email);
+
+  return res.status(200).json({ status: 'success', message: 'password reset successful' });
+};
+
+export {
+  signupUser,
+  signinUser,
+  verifyEmailToken,
+  forgotPassword,
+  resetPassword
+};
