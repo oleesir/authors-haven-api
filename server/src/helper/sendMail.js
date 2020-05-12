@@ -6,8 +6,25 @@ const sendVerificationEmail = (email, token) => {
   Mailer.send({
     to: email,
     subject: 'Confirm Email',
-    text: `Please click this email to confirm your email: ${FRONTEND_URL}/verification?token=${token}&email=${email}`
+    text: `Please click this link to confirm your email: ${FRONTEND_URL}/verification?token=${token}&email=${email}`
   });
 };
 
-export default sendVerificationEmail;
+const sendForgotPasswordEmail = (email, token) => {
+  Mailer.send({
+    to: email,
+    subject: 'Reset Password',
+    text: `Please click this link to reset your password: ${FRONTEND_URL}/forgotPassword?token=${token}&email=${email}`
+  });
+};
+
+const sendResetPasswordEmail = (email) => {
+  Mailer.send({
+    to: email,
+    subject: 'Reset Password Confirmation',
+    text: 'Your password has been successful reset, you can now login with your new password'
+  });
+};
+
+
+export { sendVerificationEmail, sendForgotPasswordEmail, sendResetPasswordEmail };

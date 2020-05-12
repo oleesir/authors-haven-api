@@ -33,6 +33,14 @@ module.exports = {
       allowNull: false,
       defaultValue: 'user'
     },
+    passwordResetToken: {
+      type: Sequelize.STRING,
+      allowNull: true
+    },
+    passwordTokenExpiry: {
+      type: Sequelize.DATE,
+      allowNull: true
+    },
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE,

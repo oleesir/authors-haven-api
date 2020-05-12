@@ -52,6 +52,12 @@ const emptyEmailToken = '';
 const invalidEmailToken = 'gdteuf12';
 const unexistingUserEmail = 'unexistinguser@gmail.com';
 const expiredEmailToken = '';
+const forgetPasswordEmail = { email: 'ryan@gmail.com' };
+const nonExistingforgetPasswordEmail = { email: 'rtyeu@gmail.com' };
+const invalidForgetPasswordEmail = { email: 'ryangmail.com' };
+const resetPasswordEmail = { password: 'qwertyuiop' };
+const emptyResetPasswordEmail = { password: '' };
+const invalidResetPasswordEmail = { password: 'rya' };
 
 const authUser = {
   email: 'ryan@gmail.com',
@@ -106,5 +112,11 @@ export {
   emptyEmailToken,
   expiredEmailToken,
   invalidEmailToken,
-  unexistingUserEmail
+  unexistingUserEmail,
+  forgetPasswordEmail,
+  nonExistingforgetPasswordEmail,
+  invalidForgetPasswordEmail,
+  resetPasswordEmail,
+  emptyResetPasswordEmail,
+  invalidResetPasswordEmail
 };

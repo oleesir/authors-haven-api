@@ -6,7 +6,7 @@ import app from '../server/src/app';
 import Mailer from '../server/src/helper/mailer';
 import model from '../server/src/database/models'
 
-const{ EmailVerifications  } = model;
+const{ EmailVerifications,Users  } = model;
 
 import {
   newUser,
@@ -28,7 +28,13 @@ import {
   wrongPassword,
   wrongEmailAuthUser,
   unexistingUserEmail,
-  invalidEmailToken
+  invalidEmailToken,
+  forgetPasswordEmail,
+  nonExistingforgetPasswordEmail,
+  invalidForgetPasswordEmail,
+  resetPasswordEmail,
+  emptyResetPasswordEmail,
+  invalidResetPasswordEmail
 } from './helper/testData';
 
 const URL = '/api/v1/auth';
@@ -326,8 +332,7 @@ describe('AuthRoutes', () => {
     });
   });
 
-
-  describe('Login Routes', () => {
+describe('Login Routes', () => {
     it('should log in an existing user ', (done) => {
       request(app)
         .post(`${URL}/signin`)
@@ -424,4 +429,113 @@ describe('AuthRoutes', () => {
         });
     });
   });
+
+  describe('Password Routes',()=>{
+    describe('ForgotPassword Route',()=> {
+      it('should send reset password mail', (done) => {
+        request(app)
+          .post(`${URL}/forgotPassword`)
+          .send(forgetPasswordEmail)
+          .expect(202)
+          .end((err, res) => {
+            expect(res.body.message).toBe('A reset token has been sent to your email address');
+            if (err) return done(err);
+            done();
+          });
+      });
+  
+      it('should not send reset password mail to none existing user', (done) => {
+        request(app)
+          .post(`${URL}/forgotPassword`)
+          .send(nonExistingforgetPasswordEmail)
+          .expect(404)
+          .end((err, res) => {
+            expect(res.body.error).toBe('This user is not registered on the app, please signup');
+            if (err) return done(err);
+            done();
+          });
+      });
+  
+      it('should return validation errors for invalid email', (done) => {
+        request(app)
+          .post(`${URL}/forgotPassword`)
+          .send(invalidForgetPasswordEmail )
+          .expect(400)
+          .end((err, res) => {
+            expect(res.body.error.email).toBe('enter a valid email address');
+            if (err) return done(err);
+            done();
+          });
+      });
+  
+    })
+  
+    describe('ResetPassword Route',()=> {
+      let email
+      let users
+      let resetToken
+      const oneHourAgo = moment(Date.now()).subtract(60, 'minutes');
+
+      beforeAll(async () => {
+        users = await Users.findOne({
+          where: {
+            email:'ryan@gmail.com'
+          }
+        });
+  
+        resetToken = users.passwordResetToken;
+        
+      });
+
+      it('should reset password and sends reset password successful mail', (done) => {
+        request(app)
+          .post(`${URL}/resetPassword?token=${resetToken}`)
+          .send(resetPasswordEmail)
+          .expect(200)
+          .end((err, res) => {
+           expect(res.body.message).toBe('password reset successful');
+            if (err) return done(err);
+            done();
+          });
+      });
+
+      it('should not reset password for invalid/expired token', (done) => {
+        request(app)
+        .post(`${URL}/resetPassword?token=${resetToken}`)
+        .send(resetPasswordEmail)
+        .expect(400)
+        .end((err, res) => {
+         expect(res.body.error).toBe('password reset token is invalid or has expired');
+          if (err) return done(err);
+          done();
+        });
+      });
+
+      it('should return validation errors when no password is provided', (done) => {
+        request(app)
+        .post(`${URL}/resetPassword?token=${resetToken}`)
+        .send(emptyResetPasswordEmail)
+        .expect(400)
+        .end((err, res) => {
+         expect(res.body.error.password).toBe('password should be between 8 to 15 characters');
+          if (err) return done(err);
+          done();
+        });
+      });
+
+
+      it('should return validation errors for invalid password', (done) => {
+        request(app)
+        .post(`${URL}/resetPassword?token=${resetToken}`)
+        .send(invalidResetPasswordEmail)
+        .expect(400)
+        .end((err, res) => {
+         expect(res.body.error.password).toBe('password should be between 8 to 15 characters');
+          if (err) return done(err);
+          done();
+        });
+      });
+  });
+});
+
 });
