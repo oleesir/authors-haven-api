@@ -1,5 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import '@babel/polyfill';
 import cryptoRandomString from 'crypto-random-string';
 import { Op } from 'sequelize';
 import moment from 'moment';
@@ -8,7 +6,6 @@ import { sendVerificationEmail, sendForgotPasswordEmail, sendResetPasswordEmail 
 import comparePassword from '../helper/comparePassword';
 import generateToken from '../helper/generateToken';
 import getSignupUserData from '../utils/user.utils';
-
 
 const { Users, EmailVerifications } = models;
 
@@ -19,7 +16,7 @@ const { Users, EmailVerifications } = models;
    * @param {object} res
    * @returns {(function|object)} Function next() or JSON object
    */
-const signupUser = async (req, res) => {
+export const signupUser = async (req, res) => {
   const userData = getSignupUserData(req.body);
 
   const existingUser = await Users.findOne({
@@ -55,7 +52,7 @@ const signupUser = async (req, res) => {
    * @param {object} res
    * @returns {(function|object)} Function next() or JSON object
    */
-const signinUser = async (req, res) => {
+export const signinUser = async (req, res) => {
   const foundUser = await Users.findOne({
     where: {
       email: req.body.email
@@ -92,7 +89,7 @@ const signinUser = async (req, res) => {
    * @param {object} res
    * @returns {(function|object)} Function next() or JSON object
    */
-const verifyEmailToken = async (req, res) => {
+export const verifyEmailToken = async (req, res) => {
   const { email, token } = req.query;
 
   const foundUser = await Users.findOne({ where: { email } });
@@ -135,7 +132,7 @@ const verifyEmailToken = async (req, res) => {
    * @param {object} res
    * @returns {(function|object)} Function next() or JSON object
    */
-const forgotPassword = async (req, res) => {
+export const forgotPassword = async (req, res) => {
   const { email } = req.body;
 
   const foundUser = await Users.findOne({ where: { email } });
@@ -165,7 +162,7 @@ const forgotPassword = async (req, res) => {
    * @param {object} res
    * @returns {(function|object)} Function next() or JSON object
    */
-const resetPassword = async (req, res) => {
+export const resetPassword = async (req, res) => {
   const timeNow = moment();
   const { password } = req.body;
   const { token } = req.query;
@@ -192,10 +189,39 @@ const resetPassword = async (req, res) => {
   return res.status(200).json({ status: 'success', message: 'password reset successful' });
 };
 
-export {
+export const socialLogin = async (req, res) => {
+  const userData = req.user._json;
+
+  if (!userData) return res.status(404).json({ status: 'failure', error: 'Resource not found' });
+
+  const firstName = userData.given_name;
+  const lastName = userData.family_name;
+  const { email } = userData;
+  const [{ dataValues: user }] = await Users.findOrCreate({
+    where: { email },
+    defaults: {
+      email, firstName, lastName, isVerified: true, password: 'NULL'
+    }
+  });
+
+  const payload = {
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    isVerified: user.isVerified
+  };
+
+  const token = generateToken(payload);
+  user.token = token;
+
+  return res.status(200).json({ status: 'success', message: 'signin successful' });
+};
+
+export default {
   signupUser,
   signinUser,
   verifyEmailToken,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  socialLogin
 };

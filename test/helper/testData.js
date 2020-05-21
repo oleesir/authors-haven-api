@@ -89,8 +89,19 @@ const wrongEmailAuthUser = {
   ...authUser, email: 'ryangmail.com'
 };
 
+const req = {
+  user: {
+    _json: {
+      id: '222222222',
+      name: 'ryan gosling',
+      email: 'ryan@gmail.com'
+    }
+  }
+};
+
 
 export {
+  req,
   newUser,
   emptyUser,
   emptyFirstName,

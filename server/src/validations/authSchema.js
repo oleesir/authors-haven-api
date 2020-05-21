@@ -1,4 +1,5 @@
 import { check } from 'express-validator';
+import notEmpty from '../helper/notEmpty';
 
 export default {
   signupUserSchema: [
@@ -6,8 +7,9 @@ export default {
       .trim()
       .exists()
       .withMessage('firstName is required')
-      .isLength({ min: 2, max: 30 })
-      .withMessage('name should be between 2 to 30 characters')
+      .custom(value => notEmpty(value, 'firstName field cannot be left blank'))
+      .isLength({ min: 2 })
+      .withMessage('name should be be at least 2 characters')
       .isAlpha()
       .withMessage('name should contain only alphabets')
       .customSanitizer(name => name.toLowerCase()),
@@ -15,8 +17,9 @@ export default {
       .trim()
       .exists()
       .withMessage('lastName is required')
-      .isLength({ min: 2, max: 30 })
-      .withMessage('name should be between 2 to 30 characters')
+      .custom(value => notEmpty(value, 'lasttName field cannot be left blank'))
+      .isLength({ min: 2 })
+      .withMessage('name should be be at least 2 characters')
       .isAlpha()
       .withMessage('name should contain only alphabets')
       .customSanitizer(name => name.toLowerCase()),
@@ -24,6 +27,7 @@ export default {
       .trim()
       .exists()
       .withMessage('email is required')
+      .custom(value => notEmpty(value, 'email field cannot be left blank'))
       .isEmail()
       .withMessage('enter a valid email address')
       .customSanitizer(email => email.toLowerCase()),
@@ -31,8 +35,9 @@ export default {
       .trim()
       .exists()
       .withMessage('password is required')
+      .custom(value => notEmpty(value, 'password field cannot be left blank'))
       .isLength({ min: 8, max: 15 })
-      .withMessage('password should be between 8 to 15 characters'),
+      .withMessage('password should be a minimum of 8 characters')
   ],
 
   signinUserSchema: [
@@ -40,6 +45,7 @@ export default {
       .trim()
       .exists()
       .withMessage('email is required')
+      .custom(value => notEmpty(value, 'email field cannot be left blank'))
       .isEmail()
       .withMessage('enter a valid email address')
       .customSanitizer(email => email.toLowerCase()),
@@ -47,8 +53,9 @@ export default {
       .trim()
       .exists()
       .withMessage('password is required')
-      .isLength({ min: 8, max: 15 })
-      .withMessage('password should be between 8 to 15 characters'),
+      .custom(value => notEmpty(value, 'password field cannot be left blank'))
+      .isLength({ min: 8 })
+      .withMessage('password should be minimum of 8 characters')
   ],
 
   forgotPasswordSchema: [
@@ -56,6 +63,7 @@ export default {
       .trim()
       .exists()
       .withMessage('email is required')
+      .custom(value => notEmpty(value, 'email field cannot be left blank'))
       .isEmail()
       .withMessage('enter a valid email address')
       .customSanitizer(email => email.toLowerCase())
@@ -65,7 +73,8 @@ export default {
       .trim()
       .exists()
       .withMessage('password is required')
+      .custom(value => notEmpty(value, 'password field cannot be left blank'))
       .isLength({ min: 8, max: 15 })
-      .withMessage('password should be between 8 to 15 characters')
+      .withMessage('password should be a minimum of 8 characters')
   ]
 };

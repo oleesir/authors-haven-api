@@ -1,4 +1,0 @@
-{
-  "testRegex": "((\\.|/*.)(spec|test))\\.(js)?$",
-  "setupFiles": ["<rootDir>/jest.setup.js"]
-}
