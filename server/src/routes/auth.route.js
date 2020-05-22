@@ -1,14 +1,17 @@
 import { Router } from 'express';
+import passport from 'passport';
 import {
   signupUser,
   signinUser,
   verifyEmailToken,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  socialLogin
 } from '../controllers/auth.controller';
 import validateResult from '../middlewares/validator.middleware';
 import validateSchema from '../validations/authSchema';
 import asyncErrorHandler from '../middlewares/asyncErrorHandler';
+
 
 const router = Router();
 
@@ -21,5 +24,8 @@ router.post('/signin', signinUserSchema, validateResult, asyncErrorHandler(signi
 router.post('/forgotPassword', forgotPasswordSchema, validateResult, asyncErrorHandler(forgotPassword));
 router.post('/resetPassword', resetPasswordSchema, validateResult, asyncErrorHandler(resetPassword));
 router.get('/verification', asyncErrorHandler(verifyEmailToken));
+
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/google/redirect', passport.authenticate('google'), asyncErrorHandler(socialLogin));
 
 export default router;

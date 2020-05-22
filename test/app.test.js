@@ -1,14 +1,15 @@
 import request from 'supertest';
+import { expect } from 'chai';
 import app from '../server/src/app';
 
 describe('app', () => {
-  it('should display authors', (done) => {
+  it('should display Authors haven app', (done) => {
     request(app)
       .get('/')
       .expect(200)
       .end((err, res) => {
-        expect(res.status).toBe(200);
-        expect(res.body.message).toBe('Authors Haven API');
+        expect(res.status).to.equal(200);
+        expect(res.body.message).to.equal('Authors Haven API');
         if (err) return done(err);
         done();
       });
@@ -19,8 +20,8 @@ describe('app', () => {
       .get('/unknown-route')
       .expect(404)
       .end((err, res) => {
-        expect(res.status).toBe(404);
-        expect(res.body.error).toBe('Not found');
+        expect(res.status).to.equal(404);
+        expect(res.body.error).to.equal('Not found');
         if (err) return done(err);
         done();
       });
