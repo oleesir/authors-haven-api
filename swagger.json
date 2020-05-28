@@ -28,6 +28,10 @@
     {
       "name": "Auth",
       "description": "Endpoints for Authentication"
+    },
+    {
+      "name": "Articles",
+      "description": "Endpoints for Articles"
     }
   ],
   "paths": {
@@ -210,6 +214,170 @@
           }
         }
       }
+    },
+    "/articles":{
+      "post": {
+        "description": "A user can create an article",
+        "summary": "This endpoint receives POST requests to create an article",
+        "tags": [
+          "Articles"
+        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "The request body for the createArticle endpoint",
+            "schema": {
+              "$ref": "#/requestBody/articles"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "A new article was created"
+          },
+          "401": {
+            "description": "Invalid token"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+     "/articles/:get_article_id":{
+      "get": {
+        "description": "A user can create an article",
+        "summary": "This endpoint receives GET requests to retrive an article",
+        "tags": [
+          "Articles"
+        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "The request body for the createArticle endpoint",
+            "schema": {
+              "$ref": "#/requestBody/articles/get_article_id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "401": {
+            "description": "Invalid token"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/articles/:get_all_articles":{
+      "get": {
+        "description": "A user can create an article",
+        "summary": "This endpoint receives GET requests to retrive all articles",
+        "tags": [
+          "Articles"
+        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "The request body for the createArticle endpoint",
+            "schema": {
+              "$ref": "#/requestBody/articles/get_all_articles"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "401": {
+            "description": "Invalid token"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/articles/:update_articles":{
+      "patch": {
+        "description": "A user can create an article",
+        "summary": "This endpoint receives PATCH requests to update an article",
+        "tags": [
+          "Articles"
+        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "The request body for the createArticle endpoint",
+            "schema": {
+              "$ref": "#/requestBody/articles/update_articles"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "401": {
+            "description": "Invalid token"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/articles/:delete_article":{
+      "delete": {
+        "description": "A user can delete an article",
+        "summary": "This endpoint receives DELETE requests to delete an article",
+        "tags": [
+          "Articles"
+        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "The request body for the createArticle endpoint",
+            "schema": {
+              "$ref": "#/requestBody/articles/delete_article"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
     }
   },
   "requestBody": {
@@ -306,6 +474,153 @@
       "example": {
         "token":"qgw6etr58gh598gh",
         "email": "user@example.com"
+      }
+    },
+    "createArticles": {
+      "type": "object",
+      "required": ["title", "body", "type"],
+      "properties": {
+        "title": {
+          "description": "Article title",
+          "type": "string"
+        },
+        "body": {
+          "description": "Article body",
+          "type": "string"
+        },
+        "userId": {
+          "description": "User id",
+          "type": "uuid"
+        },
+        "type": {
+          "description": "Article type",
+          "type": "enum"
+        },
+        "avatar": {
+          "description": "Article avatar",
+          "type": "string"
+        }
+      },
+      "example": {
+        "title":"dxfcgvhbjn",
+        "body": "xdcfgvhbjnhgfdcvhbjncfgvhb",
+        "userId": "10d393fd-95d5-4af8-a242-6d121e1666ce",
+        "type": "published",
+        "avatar": "https://res.cloudinary.com/dhixv0jh9/image/upload/v1590399940/apps.24119.13561428843663101.db53229a-3063-4dd3-b18e-61ad6b3661d1_otde0c.png"
+       }
+    },
+    "getSingleArticle": {
+      "type": "object",
+      "required": ["title", "body", "type"],
+      "properties": {
+        "title": {
+          "description": "Article title",
+          "type": "string"
+        },
+        "body": {
+          "description": "Article body",
+          "type": "string"
+        },
+        "userId": {
+          "description": "User id",
+          "type": "uuid"
+        },
+        "type": {
+          "description": "Article type",
+          "type": "enum"
+        },
+        "avatar": {
+          "description": "Article avatar",
+          "type": "string"
+        }
+      },
+      "example": {
+        "title":"dxfcgvhbjn",
+        "body": "xdcfgvhbjnhgfdcvhbjncfgvhb",
+        "userId": "10d393fd-95d5-4af8-a242-6d121e1666ce",
+        "type": "published",
+        "avatar": "https://res.cloudinary.com/dhixv0jh9/image/upload/v1590399940/apps.24119.13561428843663101.db53229a-3063-4dd3-b18e-61ad6b3661d1_otde0c.png"
+       }
+    },
+    "getAllArticle": {
+      "type": "array",
+      "required": ["title", "body", "type"],
+      "properties": {
+        "title": {
+          "description": "Article title",
+          "type": "string"
+        },
+        "body": {
+          "description": "Article body",
+          "type": "string"
+        },
+        "userId": {
+          "description": "User id",
+          "type": "uuid"
+        },
+        "type": {
+          "description": "Article type",
+          "type": "enum"
+        },
+        "avatar": {
+          "description": "Article avatar",
+          "type": "string"
+        }
+      },
+      "example": {
+        "title":"dxfcgvhbjn",
+        "body": "xdcfgvhbjnhgfdcvhbjncfgvhb",
+        "userId": "10d393fd-95d5-4af8-a242-6d121e1666ce",
+        "type": "published",
+        "avatar": "https://res.cloudinary.com/dhixv0jh9/image/upload/v1590399940/apps.24119.13561428843663101.db53229a-3063-4dd3-b18e-61ad6b3661d1_otde0c.png"
+       }
+    },
+    "updateArticle": {
+      "type": "object",
+      "required": ["title", "body", "type"],
+      "properties": {
+        "title": {
+          "description": "Article title",
+          "type": "string"
+        },
+        "body": {
+          "description": "Article body",
+          "type": "string"
+        },
+        "userId": {
+          "description": "User id",
+          "type": "uuid"
+        },
+        "type": {
+          "description": "Article type",
+          "type": "enum"
+        },
+        "avatar": {
+          "description": "Article avatar",
+          "type": "string"
+        }
+      },
+      "example": {
+        "title":"dxfcgvhbjn",
+        "body": "xdcfgvhbjnhgfdcvhbjncfgvhb",
+        "userId": "10d393fd-95d5-4af8-a242-6d121e1666ce",
+        "type": "published",
+        "avatar": "https://res.cloudinary.com/dhixv0jh9/image/upload/v1590399940/apps.24119.13561428843663101.db53229a-3063-4dd3-b18e-61ad6b3661d1_otde0c.png"
+       }
+    },
+    "deleteArticle": {
+      "type": "object",
+      "properties": {
+        "article_id": {
+          "description": "id of the article to be deleted",
+          "type": "uuid"
+        }
+      },
+      "example": {
+        "status": "success",
+        "data": {
+          "message": "article deleted successfully"
+        }
       }
     }
   }

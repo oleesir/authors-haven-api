@@ -38,7 +38,9 @@ import {
   invalidForgetPasswordEmail,
   resetPasswordEmail,
   emptyResetPasswordEmail,
-  invalidResetPasswordEmail
+  invalidResetPasswordEmail,
+  unverifiedNewUser,
+  unverifiedAuthUser
 } from './helper/testData';
 
 const URL = '/api/v1/auth';
@@ -232,6 +234,7 @@ describe('AuthRoutes', () => {
     });
 
 
+
     it(`should not verify a user with an expired token
         and should create another token after deleting the previous one`, (done) => {
           const sendMailStub = sinon.stub(Mailer, 'send');
@@ -416,6 +419,8 @@ describe('Login Routes', () => {
           done();
         });
     });
+
+  
   });
 
   describe('Password Routes',()=>{
@@ -556,9 +561,7 @@ describe('Social Login',()=>{
   };
 
   it('should return 404 if user not found on request object', async () => {
-   // const sendMailStub = sinon.stub(authController, 'socialLogin').returns(mock404())
     const req = {};
-    console.log(authController)
     sinon.stub(authController, 'socialLogin').returns(mock404());
     const result = await authController.socialLogin(req, {}, () => ({}));
     expect(result.status()).to.eql(404);

@@ -61,24 +61,24 @@ export const signinUser = async (req, res) => {
 
   if (!foundUser) return res.status(404).json({ status: 'failure', error: 'user does not exist' });
 
-  if (foundUser) {
-    const verifyUserPassword = await comparePassword(req.body.password, foundUser.password);
+  if (!foundUser.isVerified) return res.status(401).json({ status: 'failure', error: 'please check your email to verify your account' });
 
-    if (!verifyUserPassword) return res.status(401).json({ status: 'failure', error: 'email or password is incorrect' });
+  const verifyUserPassword = await comparePassword(req.body.password, foundUser.password);
 
-    foundUser.password = undefined;
+  if (!verifyUserPassword) return res.status(401).json({ status: 'failure', error: 'email or password is incorrect' });
 
-    const payload = {
-      id: foundUser.id,
-      email: foundUser.email
-    };
+  foundUser.password = undefined;
 
-    const token = generateToken(payload);
+  const payload = {
+    id: foundUser.id,
+    email: foundUser.email
+  };
 
-    const data = { ...foundUser.get(), token };
+  const token = generateToken(payload);
 
-    return res.status(200).json({ status: 'success', data });
-  }
+  const data = { ...foundUser.get(), token };
+
+  return res.status(200).json({ status: 'success', data });
 };
 
 
@@ -189,6 +189,13 @@ export const resetPassword = async (req, res) => {
   return res.status(200).json({ status: 'success', message: 'password reset successful' });
 };
 
+/**
+   * social login
+   * @method socialLogin
+   * @param {object} req
+   * @param {object} res
+   * @returns {(function|object)} Function next() or JSON object
+   */
 export const socialLogin = async (req, res) => {
   const userData = req.user._json;
 
