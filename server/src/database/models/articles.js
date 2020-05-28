@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     userId: {
       type: DataTypes.UUID,
-      allowNull: false
+      allowNull: false,
     },
     title: {
       type: DataTypes.STRING,
@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     avatar: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 'https://res.cloudinary.com/dhixv0jh9/image/upload/v1590399940/apps.24119.13561428843663101.db53229a-3063-4dd3-b18e-61ad6b3661d1_otde0c.png'
     },
     body: {
       type: DataTypes.TEXT,
