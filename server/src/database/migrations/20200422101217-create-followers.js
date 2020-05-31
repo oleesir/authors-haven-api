@@ -16,7 +16,7 @@ module.exports = {
         key: 'id',
       }
     },
-    followerId: {
+    followId: {
       allowNull: false,
       type: Sequelize.UUID,
       onDelete: 'CASCADE',
