@@ -2,8 +2,8 @@
 import '@babel/polyfill';
 import { expect } from 'chai';
 import request from 'supertest';
-import jwt from 'jsonwebtoken';
 import app from '../server/src/app';
+import generateToken from '../server/src/helper/generateToken';
 import models from '../server/src/database/models';
 
 const{ Users, Articles  } = models;
@@ -58,7 +58,7 @@ describe('Articles', ()=> {
           id: userId
         };
 
-        userToken = jwt.sign(userPayload, process.env.SECRET_KEY, { expiresIn: '1day' });
+        userToken = generateToken(userPayload);
         
         done();
       });

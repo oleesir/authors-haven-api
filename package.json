@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "pretest": "NODE_ENV=test npm run undo:migrate:db && NODE_ENV=test npm run migrate:db",
-    "test": "NODE_ENV=test  mocha --require @babel/register ./test/tests.test.js",
+    "test": "NODE_ENV=test  mocha --require @babel/register ./test/tests.test.js  --exit --timeout 10000 ",
     "test:coverage": "nyc --reporter=text --reporter=json --reporter=lcov npm run test",
     "codecov": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "build": "babel server/src -d server/dist",

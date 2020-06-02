@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       allowNull: false
     },
-    followerId: {
+    followId: {
       type: DataTypes.UUID,
       allowNull: false
     }
@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: 'CASCADE',
     });
     Followers.belongsTo(models.Users, {
-      foreignKey: 'followerId',
+      foreignKey: 'followId',
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
     });

@@ -15,6 +15,36 @@ const unverifiedNewUser = {
   password: 'qwertyuioop'
 };
 
+const followNewUser = {
+  firstName: 'lisa',
+  lastName: 'blossom',
+  email: 'blossom@gmail.com',
+  password: 'qwertyuioop'
+};
+
+const followNewUserOne = {
+  firstName: 'stephine',
+  lastName: 'thelma',
+  email: 'stephine@gmail.com',
+  password: 'qwertyuioop'
+};
+
+const followNewUserTwo = {
+  firstName: 'ann',
+  lastName: 'hope',
+  email: 'hope@gmail.com',
+  password: 'qwertyuioop'
+};
+
+
+const followNewUserThree = {
+  firstName: 'julie',
+  lastName: 'anita',
+  email: 'ify@gmail.com',
+  password: 'qwertyuioop'
+};
+
+
 const emptyUser = {
   firstName: '',
   lastName: '',
@@ -146,6 +176,10 @@ const wrongArticleId = '127db482-889e-44d3-8ad9-3ywywtyw-3763562';
 const wrongArticleId1 = 'bf0a9c55-6840-427e-9414-40e8434e24ba';
 const nonexistingArticleId = 'bf0a9c55-6840-427e-9414-40e8434e24ba';
 const wrongupdateArticleId = '0354cd08-9fe2-11ea-bb37-0242ac130002';
+const unknownUserId = '42065633-95d0-47ae-8eac-1c361ab29ff2';
+const nonexistingAuthor = { followId: 'fa1a5de1-3e71-4b75-8fa4-b0eec28e54c8' };
+const emptyfollowId = { followId: '' };
+const invalidfollowId = { followId: 'fa1a5de1-3e71-4b75-8fa4b0eec28e88c8' };
 const emptyTitleUpdate = { ...newArticle, title: '', body: 'A Version 4 UUID is a universally unique identifier that is generated using' };
 const wrongTypeUpdate = {
   ...newArticle, title: 'hello', body: 'A Version 4 UUID is a universally unique identifier that is generated using', type: 'joy'
@@ -200,5 +234,13 @@ export {
   articleToDelete,
   nonexistingArticleId,
   unverifiedNewUser,
-  unverifiedAuthUser
+  unverifiedAuthUser,
+  followNewUser,
+  followNewUserOne,
+  followNewUserTwo,
+  nonexistingAuthor,
+  emptyfollowId,
+  invalidfollowId,
+  unknownUserId,
+  followNewUserThree
 };
