@@ -8,6 +8,13 @@ const newUser = {
   password: 'ryangosl'
 };
 
+const userCommentOne = {
+  firstName: 'solomon',
+  lastName: 'david',
+  email: 'davsolo@gmail.com',
+  password: 'ryangosl'
+};
+
 const unverifiedNewUser = {
   firstName: 'jack',
   lastName: 'mailyright',
@@ -151,25 +158,81 @@ const userArticle = {
   password: 'jeffyisgood'
 };
 
+const userComment = {
+  firstName: 'sean',
+  lastName: 'carter',
+  email: 'carter@gmail.com',
+  password: 'carterfive'
+};
+
 const userPayload = {
   email: 'ryan@gmail.com',
   password: 'ryangosl'
 };
 
 const anotherPayload = {
-  email: 'tweet@gmail.com',
+  email: 'lee@email.com',
   id: '127db482-889e-44d3-8ad9-1a2709295a42'
 };
+
+const leePayload = {
+  email: 'tweet@gmail.com',
+  id: '85a55e95-6451-4de9-9470-85d579266922'
+};
+
+const deletePayload = {
+  id: 'd9efbfbc-c993-44e0-b7b2-a20722d6ae59',
+  email: 'olive@email.com',
+};
+
+const userPayloadOne = {
+  id: 'ff9ec60b-a42a-42c8-a16f-454cd83bfb66',
+  email: 'ckruszelnicki1@sfgate.com'
+};
+
+const userPayloadTwo = {
+  id: '2e677e5a-1806-4188-a279-38ef27978299',
+  email: 'lniaves4@netscape.com'
+};
+
+const userToken = jwt.sign(userPayloadOne, process.env.SECRET_KEY, { expiresIn: '1day' });
+const userTokenTwo = jwt.sign(userPayloadTwo, process.env.SECRET_KEY, { expiresIn: '1day' });
+const deleteToken = jwt.sign(deletePayload, process.env.SECRET_KEY, { expiresIn: '1day' });
+const leeUpdateToken = jwt.sign(leePayload, process.env.SECRET_KEY, { expiresIn: '1day' });
 const expiredToken = jwt.sign(userPayload, process.env.SECRET_KEY, { expiresIn: '1' });
 const anotherToken = jwt.sign(anotherPayload, process.env.SECRET_KEY, { expiresIn: '1day' });
-const newArticle = { title: 'hello ivy', body: 'God is the greatest' };
-const newArticle1 = { title: 'hello amaka', body: 'how you? today is a good day', type: 'draft' };
-const newArticleWrongType = { title: 'hello amaka', body: 'how you? today is a good day', type: 'king' };
-const updatedArticle = {
-  ...newArticle1, title: 'hello rita', body: 'real friends', type: 'published'
+
+const newArticle = {
+  title: 'hello ivy',
+  body: 'God is the greatest',
+  status: 'published'
 };
-const nonexistingArticle = { title: 'hello spaces', body: 'length can change at any timeand data can be stored at non contiguous', type: 'published' };
-const articleToDelete = { title: 'hello spaces', body: 'length can change at any timeand data can be stored at non contiguous', type: 'published' };
+const newArticle1 = {
+  title: 'hello amaka',
+  body: 'how you? today is a good day',
+  status: 'draft'
+};
+const newArticleWrongType = {
+  title: 'hello amaka',
+  body: 'how you? today is a good day',
+  status: 'king'
+};
+const updatedArticle = {
+  ...newArticle1,
+  title: 'hello rita',
+  body: 'real friends',
+  status: 'published'
+};
+const nonexistingArticle = {
+  title: 'hello spaces',
+  body: 'length can change at any timeand data can be stored at non contiguous',
+  status: 'published'
+};
+const articleToDelete = {
+  title: 'hello spaces',
+  body: 'length can change at any timeand data can be stored at non contiguous',
+  status: 'published'
+};
 const emptyTitle = { title: '', body: 'hello devs' };
 const oneTitle = { title: 'e', body: 'hello devs' };
 const wrongArticleId = '127db482-889e-44d3-8ad9-3ywywtyw-3763562';
@@ -180,10 +243,29 @@ const unknownUserId = '42065633-95d0-47ae-8eac-1c361ab29ff2';
 const nonexistingAuthor = { followId: 'fa1a5de1-3e71-4b75-8fa4-b0eec28e54c8' };
 const emptyfollowId = { followId: '' };
 const invalidfollowId = { followId: 'fa1a5de1-3e71-4b75-8fa4b0eec28e88c8' };
-const emptyTitleUpdate = { ...newArticle, title: '', body: 'A Version 4 UUID is a universally unique identifier that is generated using' };
-const wrongTypeUpdate = {
-  ...newArticle, title: 'hello', body: 'A Version 4 UUID is a universally unique identifier that is generated using', type: 'joy'
+const emptyTitleUpdate = {
+  ...newArticle,
+  title: '',
+  body: 'A Version 4 UUID is a universally unique identifier that is generated using'
 };
+const wrongTypeUpdate = {
+  ...newArticle,
+  title: 'hello',
+  body: 'A Version 4 UUID is a universally unique identifier that is generated using',
+  status: 'joy'
+};
+const newComment = {
+  articleId: '576d59fc-995e-4bb6-b9bb-1991ffde20d0',
+  body: 'this is a nice reply'
+};
+const newReplyComment = { body: 'reply a comment now' };
+const updateReplyComment = { body: 'reply a comment now now' };
+const commentId = 'fdcf7470-8646-4037-8fc0-bbcada64353d';
+const updateId = 'ba524847-61a5-46a7-b906-c908627fe586';
+const getArticleWithComments = '77397271-e5ac-4986-a415-3de7e1967d62';
+const getRepliesToComment = 'fdcf7470-8646-4037-8fc0-bbcada64353d';
+const deleteComment = '9ce58c1f-d2ac-4278-a7f0-700967a77446';
+const userIdTwo = '2e677e5a-1806-4188-a279-38ef27978299';
 
 
 export {
@@ -242,5 +324,20 @@ export {
   emptyfollowId,
   invalidfollowId,
   unknownUserId,
-  followNewUserThree
+  followNewUserThree,
+  userComment,
+  newComment,
+  newReplyComment,
+  userCommentOne,
+  updateReplyComment,
+  leeUpdateToken,
+  updateId,
+  getArticleWithComments,
+  getRepliesToComment,
+  deleteComment,
+  deleteToken,
+  userToken,
+  commentId,
+  userIdTwo,
+  userTokenTwo
 };

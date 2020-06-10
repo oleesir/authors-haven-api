@@ -18,9 +18,9 @@ const {
 } = validateSchema;
 
 router.post('/', checkToken, followUserSchema, validateResult, asyncErrorHandler(followUser));
-router.delete('/:id', checkToken, unfollowUserSchema, validateResult, asyncErrorHandler(unfollowUser));
 router.get('/following', checkToken, asyncErrorHandler(getFollowing));
 router.get('/followers', checkToken, asyncErrorHandler(getFollowers));
+router.delete('/:id', checkToken, unfollowUserSchema, validateResult, asyncErrorHandler(unfollowUser));
 
 
 export default router;

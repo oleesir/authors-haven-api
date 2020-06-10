@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       allowNull: false
     },
-    type: {
+    status: {
       type: DataTypes.ENUM('like', 'dislike'),
       allowNull: false
     }

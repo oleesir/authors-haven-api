@@ -57,7 +57,6 @@ export const unfollowUser = async (req, res) => {
 export const getFollowing = async (req, res) => {
   const { id: userId } = req.decoded;
 
-
   const following = await Followers.findAll({
     where: { userId },
     include: [{

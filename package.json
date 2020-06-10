@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "pretest": "NODE_ENV=test npm run undo:migrate:db && NODE_ENV=test npm run migrate:db",
+    "pretest": "NODE_ENV=test npm run undo:migrate:db && NODE_ENV=test npm run migrate:db && NODE_ENV=test npm run seed:db",
     "test": "NODE_ENV=test  mocha --require @babel/register ./test/tests.test.js  --exit --timeout 10000 ",
     "test:coverage": "nyc --reporter=text --reporter=json --reporter=lcov npm run test",
     "codecov": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
@@ -15,6 +15,7 @@
     "migrate:test_db": "NODE_ENV=test sequelize db:migrate",
     "undo:migrate:db": "sequelize db:migrate:undo:all",
     "seed:db": "sequelize db:seed:all",
+    "undo:seed:db": "sequelize db:seed:undo",
     "reset:db": "npm run migrate:undo && npm run migrate && npm run seed:db",
     "lint": "eslint --fix src/**/*.js"
   },

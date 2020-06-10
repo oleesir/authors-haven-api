@@ -24,7 +24,9 @@ import {
   newArticleWrongType,
   wrongupdateArticleId,
   articleToDelete,
-  nonexistingArticleId 
+  nonexistingArticleId,
+  userIdTwo,
+  userTokenTwo
   } from '././helper/testData';
 
 const URL = '/api/v1';
@@ -73,7 +75,7 @@ describe('Articles', ()=> {
         .expect(201)
         .end((err, res) => {
            expect(res.body.data).to.have.property('id');
-           expect(res.body.data).to.have.property('type');
+           expect(res.body.data).to.have.property('status');
            expect(res.body.data).to.have.property('body');
            expect(res.body.data).to.have.property('userId');
           if (err) return done(err);
@@ -107,14 +109,14 @@ describe('Articles', ()=> {
         });
     })
 
-    it('should not create an article with a wrong type', (done) => {
+    it('should not create an article with a wrong status', (done) => {
       request(app)
         .post(`${URL}/articles`)
         .send(newArticleWrongType )
         .set('Authorization', `Bearer ${userToken}`)
         .expect(400)
         .end((err, res) => {
-          expect(res.body.error).to.have.property('type').to.equal('type can either be published or draft');
+          expect(res.body.error).to.have.property('status').to.equal('status can either be published or draft');
           if (err) return done(err);
           done();
         });
@@ -160,7 +162,7 @@ describe('Articles', ()=> {
                 articleId = res.body.data.id;
 
                  await Articles.update(
-                  { type: 'published' },
+                  { status: 'published' },
                   { where: { id: articleId }, returning: true }
                 );
 
@@ -178,7 +180,7 @@ describe('Articles', ()=> {
               .expect(200)
               .end((err, res) => {
                 expect(res.body.data).to.have.property('id');
-                expect(res.body.data).to.have.property('type');
+                expect(res.body.data).to.have.property('status');
                 expect(res.body.data).to.have.property('body');
                 expect(res.body.data).to.have.property('userId');
                 if (err) return done(err);
@@ -225,7 +227,7 @@ describe('Articles', ()=> {
       
         describe('Get all article',()=> {
 
-          it('should get all articles for a verified author', (done) => {
+          it('should get all articles for an author', (done) => {
             request(app)
               .get(`${URL}/articles`)
               .set('Authorization', `Bearer ${userToken}`)
@@ -237,10 +239,10 @@ describe('Articles', ()=> {
               });
           })
       
-          it('should get all published articles for a verified author', (done) => {
+          it('should get all articles for a verified author', (done) => {
             request(app)
-              .get(`${URL}/articles?type=${'published'}`)
-              .set('Authorization', `Bearer ${userToken}`)
+              .get(`${URL}/users/${userIdTwo}/articles?status=${'published'}`)
+              .set('Authorization', `Bearer ${ userTokenTwo}`)
               .expect(200)
               .end((err, res) => {
                 expect(res.body).to.have.property('status').eql('success');
@@ -252,7 +254,7 @@ describe('Articles', ()=> {
            
           it('should get all draft articles for a verified author', (done) => {
             request(app)
-              .get(`${URL}/articles?type=${'draft'}`)
+              .get(`${URL}/articles?status=${'draft'}`)
               .set('Authorization', `Bearer ${userToken}`)
               .expect(200)
               .end((err, res) => {
@@ -333,14 +335,14 @@ describe('Articles', ()=> {
         });
     });
 
-    it('should not update an article with a wrong type ', (done) => {
+    it('should not update an article with a wrong status ', (done) => {
       request(app)
         .patch(`${URL}/articles/${articleIdToUpdate}`)
         .set('Authorization', `Bearer ${userToken}`)
         .send( wrongTypeUpdate )
         .expect(400)
         .end((err, res) => {
-          expect(res.body.error).to.have.property('type').to.equal('type can either be published or draft');
+          expect(res.body.error).to.have.property('status').to.equal('status can either be published or draft');
           if (err) return done(err);
           done();
         });

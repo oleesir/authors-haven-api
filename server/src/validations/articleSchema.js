@@ -10,10 +10,10 @@ export default {
       .custom(value => notEmpty(value, 'title field cannot be left blank'))
       .isLength({ min: 2 })
       .withMessage('name should be be at least 2 characters'),
-    check('type')
+    check('status')
       .optional()
       .isIn(['draft', 'published'])
-      .withMessage('type can either be published or draft')
+      .withMessage('status can either be published or draft')
   ],
   getArticleSchema: [
     check('id').isUUID(4)
@@ -29,10 +29,10 @@ export default {
       .custom(value => notEmpty(value, 'title field cannot be left blank'))
       .isLength({ min: 2 })
       .withMessage('name should be be at least 2 characters'),
-    check('type')
+    check('status')
       .optional()
       .isIn(['draft', 'published'])
-      .withMessage('type can either be published or draft')
+      .withMessage('status can either be published or draft')
   ],
   deleteArticleSchema: [
     check('id').isUUID(4)

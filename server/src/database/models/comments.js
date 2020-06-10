@@ -17,7 +17,11 @@ module.exports = (sequelize, DataTypes) => {
     body: {
       type: DataTypes.TEXT,
       allowNull: false
-    }
+    },
+    repliedTo: {
+      allowNull: true,
+      type: DataTypes.UUID,
+    },
   }, {});
   Comments.associate = (models) => {
     Comments.belongsTo(models.Users, {
@@ -27,6 +31,11 @@ module.exports = (sequelize, DataTypes) => {
     });
     Comments.belongsTo(models.Articles, {
       foreignKey: 'articleId',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
+    Comments.belongsTo(models.Comments, {
+      foreignKey: 'repliedTo',
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
     });
