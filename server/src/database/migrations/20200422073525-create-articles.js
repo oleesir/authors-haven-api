@@ -29,7 +29,7 @@ module.exports = {
       type: Sequelize.TEXT,
       allowNull: false,
     },
-    type: {
+    status: {
       allowNull: false,
       type: Sequelize.ENUM('draft', 'published'),
       defaultValue: 'draft'

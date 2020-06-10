@@ -30,6 +30,16 @@ module.exports = {
       allowNull: false,
       type: Sequelize.TEXT,
     },
+    repliedTo: {
+      allowNull: true,
+      type: Sequelize.UUID,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+      references: {
+        model: 'Comments',
+        key: 'id',
+      }
+    },
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE,

@@ -1,6 +1,6 @@
 import models from '../database/models';
 
-const { Articles } = models;
+const { Articles, Users } = models;
 /**
    * create a new article
    * @method createArticle
@@ -35,6 +35,46 @@ export const getSingleArticle = async (req, res) => {
   return res.status(200).json({ status: 'success', data: foundArticle });
 };
 
+
+/**
+   * get all articles
+   * @method getAllArticles
+   * @param {object} req
+   * @param {object} res
+   * @returns {(function|object)} Function next() or JSON object
+   */
+export const getAllArticlesByStatus = async (req, res) => {
+  const { id: userId } = req.decoded;
+  const { id } = req.params;
+  const page = req.query.page || 1;
+  const limit = req.query.limit || 3;
+  const offset = limit * (page - 1);
+  const { status } = req.query;
+
+  const foundUser = await Users.findOne({ where: { id } });
+
+  if (!foundUser) return res.status(404).json({ status: 'failure', error: 'user does not exist' });
+
+  if (foundUser.id !== userId) return res.status(401).json({ status: 'failure', error: 'you not authorized' });
+
+  const { count, rows: articles } = await Articles.findAndCountAll({
+    where: { status },
+    limit,
+    offset
+  });
+
+  const pageCount = Math.ceil(count / limit);
+  return res.status(200).json({
+    status: 'success',
+    data: articles,
+    pagination: {
+      itemCount: count,
+      pageCount,
+      currentPage: page
+    }
+  });
+};
+
 /**
    * get all articles
    * @method getAllArticles
@@ -43,19 +83,35 @@ export const getSingleArticle = async (req, res) => {
    * @returns {(function|object)} Function next() or JSON object
    */
 export const getAllArticles = async (req, res) => {
-  const { id: userId } = req.decoded;
-  const { type } = req.query;
-  let articles;
+  const page = req.query.page || 1;
+  const limit = req.query.limit || 3;
+  const offset = limit * (page - 1);
 
 
-  if (type) {
-    articles = await Articles.findAll({ where: { userId, type } });
-    return res.status(200).json({ status: 'success', data: articles });
-  }
+  const result = await Articles.findAndCountAll({
+    where: {
+      status: 'published'
+    },
+    limit,
+    offset,
+    order: [['createdAt', 'DESC']]
+  });
 
-  articles = await Articles.findAll({ where: { userId } });
-  return res.status(200).json({ status: 'success', data: articles });
+  const { count, rows } = result;
+
+  const pageCount = Math.ceil(count / limit);
+
+  res.status(200).json({
+    status: 'success',
+    data: rows,
+    pagination: {
+      itemCount: count,
+      pageCount,
+      currentPage: page
+    }
+  });
 };
+
 
 /**
    * update article
@@ -103,5 +159,6 @@ export default {
   getSingleArticle,
   getAllArticles,
   updateArticle,
+  getAllArticlesByStatus,
   deleteArticle
 };

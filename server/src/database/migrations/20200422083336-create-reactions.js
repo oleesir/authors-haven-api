@@ -16,7 +16,7 @@ module.exports = {
         key: 'id',
       }
     },
-    type: {
+    status: {
       allowNull: false,
       type: Sequelize.ENUM('like', 'dislike'),
     },

@@ -1,9 +1,15 @@
 import { Router } from 'express';
-import articleController from '../controllers/article.controller';
 import checkToken from '../middlewares/authorization.middleware';
 import asyncErrorHandler from '../middlewares/asyncErrorHandler';
 import validateSchema from '../validations/articleSchema';
 import validateResult from '../middlewares/validator.middleware';
+import {
+  createArticle,
+  getSingleArticle,
+  updateArticle,
+  deleteArticle,
+  getAllArticles
+} from '../controllers/article.controller';
 
 const router = Router();
 
@@ -13,17 +19,14 @@ const {
   updateArticleSchema,
   deleteArticleSchema
 } = validateSchema;
-const {
-  createArticle,
-  getSingleArticle,
-  getAllArticles,
-  updateArticle,
-  deleteArticle
-} = articleController;
+
+// articles
+
+// CRUD
 
 router.post('/', checkToken, createArticleSchema, validateResult, asyncErrorHandler(createArticle));
+router.get('/', asyncErrorHandler(getAllArticles));
 router.get('/:id', checkToken, getArticleSchema, validateResult, asyncErrorHandler(getSingleArticle));
-router.get('/', checkToken, asyncErrorHandler(getAllArticles));
 router.patch('/:id', checkToken, updateArticleSchema, validateResult, asyncErrorHandler(updateArticle));
 router.delete('/:id', checkToken, deleteArticleSchema, validateResult, asyncErrorHandler(deleteArticle));
 
