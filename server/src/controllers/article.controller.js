@@ -2,12 +2,12 @@ import models from '../database/models';
 
 const { Articles, Users } = models;
 /**
-   * create a new article
-   * @method createArticle
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * create a new article
+ * @method createArticle
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const createArticle = async (req, res) => {
   const { id: userId } = req.decoded;
 
@@ -18,12 +18,12 @@ export const createArticle = async (req, res) => {
 
 
 /**
-   * create a get a single Article
-   * @method getSingleArticle
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * create a get a single Article
+ * @method getSingleArticle
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const getSingleArticle = async (req, res) => {
   const { id } = req.params;
   const { id: userId } = req.decoded;
@@ -37,12 +37,12 @@ export const getSingleArticle = async (req, res) => {
 
 
 /**
-   * get all articles
-   * @method getAllArticles
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * get all articles
+ * @method getAllArticles
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const getAllArticlesByStatus = async (req, res) => {
   const { id: userId } = req.decoded;
   const { id } = req.params;
@@ -76,12 +76,12 @@ export const getAllArticlesByStatus = async (req, res) => {
 };
 
 /**
-   * get all articles
-   * @method getAllArticles
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * get all articles
+ * @method getAllArticles
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const getAllArticles = async (req, res) => {
   const page = req.query.page || 1;
   const limit = req.query.limit || 3;
@@ -114,12 +114,12 @@ export const getAllArticles = async (req, res) => {
 
 
 /**
-   * update article
-   * @method updateArticle
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * update article
+ * @method updateArticle
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const updateArticle = async (req, res) => {
   const { id } = req.params;
   const { id: userId } = req.decoded;
@@ -134,12 +134,12 @@ export const updateArticle = async (req, res) => {
 };
 
 /**
-   * delete article
-   * @method deleteArticle
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * delete article
+ * @method deleteArticle
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const deleteArticle = async (req, res) => {
   const { id } = req.params;
   const { id: userId } = req.decoded;

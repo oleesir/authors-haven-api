@@ -195,6 +195,13 @@ const userPayloadTwo = {
   email: 'lniaves4@netscape.com'
 };
 
+
+const userPayloadThree = {
+  id: '85a55e95-6451-4de9-9470-85d579266922',
+  email: 'lee@email.com'
+};
+
+const userTokenThree = jwt.sign(userPayloadThree, process.env.SECRET_KEY, { expiresIn: '1day' });
 const userToken = jwt.sign(userPayloadOne, process.env.SECRET_KEY, { expiresIn: '1day' });
 const userTokenTwo = jwt.sign(userPayloadTwo, process.env.SECRET_KEY, { expiresIn: '1day' });
 const deleteToken = jwt.sign(deletePayload, process.env.SECRET_KEY, { expiresIn: '1day' });
@@ -258,6 +265,10 @@ const newComment = {
   articleId: '576d59fc-995e-4bb6-b9bb-1991ffde20d0',
   body: 'this is a nice reply'
 };
+
+const bookmarkArticle = {
+  articleId: '1ffa61a2-a124-4912-9609-4a9e93f4d73f'
+};
 const newReplyComment = { body: 'reply a comment now' };
 const updateReplyComment = { body: 'reply a comment now now' };
 const commentId = 'fdcf7470-8646-4037-8fc0-bbcada64353d';
@@ -266,7 +277,9 @@ const getArticleWithComments = '77397271-e5ac-4986-a415-3de7e1967d62';
 const getRepliesToComment = 'fdcf7470-8646-4037-8fc0-bbcada64353d';
 const deleteComment = '9ce58c1f-d2ac-4278-a7f0-700967a77446';
 const userIdTwo = '2e677e5a-1806-4188-a279-38ef27978299';
-
+const articleId = '1ffa61a2-a124-4912-9609-4a9e93f4d73f';
+const getBookmarkId = '45a7fd13-3788-4576-9a46-37b37ea59ff1';
+const deleteBookmarkId = 'fe4472d2-6be8-4050-b70f-ee443d6bf5c1';
 
 export {
   req,
@@ -339,5 +352,10 @@ export {
   userToken,
   commentId,
   userIdTwo,
-  userTokenTwo
+  userTokenTwo,
+  articleId,
+  bookmarkArticle,
+  getBookmarkId,
+  userTokenThree,
+  deleteBookmarkId
 };

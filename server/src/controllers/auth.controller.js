@@ -10,12 +10,12 @@ import getSignupUserData from '../utils/user.utils';
 const { Users, EmailVerifications } = models;
 
 /**
-   * Registers a new user
-   * @method signupUser
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * Registers a new user
+ * @method signupUser
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const signupUser = async (req, res) => {
   const userData = getSignupUserData(req.body);
 
@@ -46,12 +46,12 @@ export const signupUser = async (req, res) => {
 
 
 /**
-   * Login a new user
-   * @method signinUser
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * Login a new user
+ * @method signinUser
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const signinUser = async (req, res) => {
   const foundUser = await Users.findOne({
     where: {
@@ -83,12 +83,12 @@ export const signinUser = async (req, res) => {
 
 
 /**
-   * verify a new user
-   * @method verifyEmailToken
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * verify a new user
+ * @method verifyEmailToken
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const verifyEmailToken = async (req, res) => {
   const { email, token } = req.query;
 
@@ -126,12 +126,12 @@ export const verifyEmailToken = async (req, res) => {
 };
 
 /**
-   * forgot password
-   * @method forgotPassword
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * forgot password
+ * @method forgotPassword
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
 
@@ -156,12 +156,12 @@ export const forgotPassword = async (req, res) => {
 };
 
 /**
-   * reset password
-   * @method resetPassword
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * reset password
+ * @method resetPassword
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const resetPassword = async (req, res) => {
   const timeNow = moment();
   const { password } = req.body;
@@ -190,12 +190,12 @@ export const resetPassword = async (req, res) => {
 };
 
 /**
-   * social login
-   * @method socialLogin
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * social login
+ * @method socialLogin
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const socialLogin = async (req, res) => {
   const userData = req.user._json;
 
