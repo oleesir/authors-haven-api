@@ -2,12 +2,12 @@ import models from '../database/models';
 
 const { Users, Followers } = models;
 /**
-   * follow a verified user
-   * @method follow
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * follow a verified user
+ * @method follow
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const followUser = async (req, res) => {
   const { followId } = req.body;
   const { id: userId } = req.decoded;
@@ -26,12 +26,12 @@ export const followUser = async (req, res) => {
 };
 
 /**
-   * unfollow a verified user
-   * @method follow
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * unfollow a verified user
+ * @method follow
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const unfollowUser = async (req, res) => {
   const { id } = req.params;
   const { id: userId } = req.decoded;
@@ -48,12 +48,12 @@ export const unfollowUser = async (req, res) => {
 };
 
 /**
-   * get people the user follows
-   * @method follow
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * get people the user follows
+ * @method follow
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const getFollowing = async (req, res) => {
   const { id: userId } = req.decoded;
 
@@ -70,12 +70,12 @@ export const getFollowing = async (req, res) => {
 };
 
 /**
-   * get followers
-   * @method follow
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * get followers
+ * @method follow
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const getFollowers = async (req, res) => {
   const { id } = req.decoded;
 

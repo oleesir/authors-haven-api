@@ -2,12 +2,12 @@ import models from '../database/models';
 
 const { Articles, Comments } = models;
 /**
-   * create a new comment for an article
-   * @method createComment
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * create a new comment for an article
+ * @method createComment
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const createCommentOnArticle = async (req, res) => {
   const { id: userId } = req.decoded;
   const { articleId } = req.body;
@@ -29,12 +29,12 @@ export const createCommentOnArticle = async (req, res) => {
 
 
 /**
-   * create a reply comment
-   * @method createReplyComment
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * create a reply comment
+ * @method createReplyComment
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const createReplyComment = async (req, res) => {
   const { commentId } = req.params;
   const { id: userId } = req.decoded;
@@ -53,12 +53,12 @@ export const createReplyComment = async (req, res) => {
 };
 
 /**
-   * updates a comment
-   * @method updateComment
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * updates a comment
+ * @method updateComment
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const updateComment = async (req, res) => {
   const { id: userId } = req.decoded;
   const { id } = req.params;
@@ -74,12 +74,12 @@ export const updateComment = async (req, res) => {
 
 
 /**
-   * gets article with all its comments
-   * @method getAllCommentsForArticle
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * gets article with all its comments
+ * @method getAllCommentsForArticle
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const getAllCommentsForArticle = async (req, res) => {
   const page = req.query.page || 1;
   const limit = req.query.limit || 3;
@@ -110,12 +110,12 @@ export const getAllCommentsForArticle = async (req, res) => {
 
 
 /**
-   * gets all replies to a comment
-   * @method  getAllRepliesToComment
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * gets all replies to a comment
+ * @method  getAllRepliesToComment
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const getAllRepliesToComment = async (req, res) => {
   const { commentId } = req.params;
   const page = req.query.page || 1;
@@ -146,12 +146,12 @@ export const getAllRepliesToComment = async (req, res) => {
 };
 
 /**
-   * deletes a comment
-   * @method deleteComment
-   * @param {object} req
-   * @param {object} res
-   * @returns {(function|object)} Function next() or JSON object
-   */
+ * deletes a comment
+ * @method deleteComment
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
 export const deleteComment = async (req, res) => {
   const { id: userId } = req.decoded;
   const { id } = req.params;
