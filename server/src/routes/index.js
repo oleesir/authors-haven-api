@@ -15,4 +15,5 @@ router.use('/comments', commentRoutes);
 router.use('/users', userRoutes);
 router.use('/bookmarks', bookmarksRoutes);
 
+
 export default router;
