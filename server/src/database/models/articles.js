@@ -50,6 +50,10 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
     });
+    Articles.belongsToMany(models.Tags, {
+      through: 'ArticleTags',
+      foreignKey: 'articleId',
+    });
     Articles.belongsTo(models.Users, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',

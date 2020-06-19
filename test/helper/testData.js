@@ -212,12 +212,14 @@ const anotherToken = jwt.sign(anotherPayload, process.env.SECRET_KEY, { expiresI
 const newArticle = {
   title: 'hello ivy',
   body: 'God is the greatest',
-  status: 'published'
+  status: 'published',
+  tags: ['javascript', 'java']
 };
 const newArticle1 = {
   title: 'hello amaka',
   body: 'how you? today is a good day',
-  status: 'draft'
+  status: 'draft',
+  tags: ['javascript', 'java']
 };
 const newArticleWrongType = {
   title: 'hello amaka',
@@ -228,17 +230,20 @@ const updatedArticle = {
   ...newArticle1,
   title: 'hello rita',
   body: 'real friends',
-  status: 'published'
+  status: 'published',
+  tags: ['javascript', 'java']
 };
 const nonexistingArticle = {
   title: 'hello spaces',
   body: 'length can change at any timeand data can be stored at non contiguous',
-  status: 'published'
+  status: 'published',
+  tags: ['javascript', 'java']
 };
 const articleToDelete = {
   title: 'hello spaces',
   body: 'length can change at any timeand data can be stored at non contiguous',
-  status: 'published'
+  status: 'published',
+  tags: ['javascript', 'java']
 };
 const emptyTitle = { title: '', body: 'hello devs' };
 const oneTitle = { title: 'e', body: 'hello devs' };
@@ -268,6 +273,9 @@ const newComment = {
 
 const bookmarkArticle = {
   articleId: '1ffa61a2-a124-4912-9609-4a9e93f4d73f'
+};
+const newTag = {
+  name: 'javascript'
 };
 const newReplyComment = { body: 'reply a comment now' };
 const updateReplyComment = { body: 'reply a comment now now' };
@@ -357,5 +365,6 @@ export {
   bookmarkArticle,
   getBookmarkId,
   userTokenThree,
-  deleteBookmarkId
+  deleteBookmarkId,
+  newTag
 };

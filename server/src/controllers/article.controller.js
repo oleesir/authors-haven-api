@@ -1,6 +1,10 @@
+import { Op } from 'sequelize';
+
 import models from '../database/models';
 
-const { Articles, Users } = models;
+const {
+  Articles, Users, Tags
+} = models;
 /**
  * create a new article
  * @method createArticle
@@ -10,10 +14,42 @@ const { Articles, Users } = models;
  */
 export const createArticle = async (req, res) => {
   const { id: userId } = req.decoded;
+  const { tags } = req.body;
 
-  const article = await Articles.create({ ...req.body, userId });
+  const findOrCreatePromise = tags.map(async (tag) => {
+    const [foundOrCreated] = await Tags.findOrCreate({
+      where: { name: { [Op.iLike]: tag } },
+      defaults: {
+        name: tag.toLowerCase()
+      }
+    });
 
-  return res.status(201).json({ status: 'success', data: article });
+    return foundOrCreated;
+  });
+
+  const foundOrCreatedTags = await Promise.all(findOrCreatePromise);
+
+  const articleInstance = await Articles.create({
+    ...req.body,
+    userId,
+  });
+
+  await articleInstance.addTags(foundOrCreatedTags);
+
+  const article = await articleInstance.reload({
+    include: [{
+      model: Tags,
+      attributes: {
+        exclude: ['id', 'createdAt', 'updatedAt']
+      },
+      through: { attributes: [] }
+    }]
+  });
+
+  return res.status(201).json({
+    status: 'success',
+    data: article
+  });
 };
 
 

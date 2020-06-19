@@ -20,9 +20,6 @@ const {
   deleteArticleSchema
 } = validateSchema;
 
-// articles
-
-// CRUD
 
 router.post('/', checkToken, createArticleSchema, validateResult, asyncErrorHandler(createArticle));
 router.get('/', asyncErrorHandler(getAllArticles));
