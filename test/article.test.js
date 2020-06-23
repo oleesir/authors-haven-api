@@ -363,6 +363,24 @@ describe('Articles', ()=> {
 
   })
 
+  describe('Search articles',() => {
+  it('should return result from matching articles table', (done) => {
+      const key ='greatest';
+      request(app)
+        .get(`${URL}/articles/search?keyword=${key}`)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body.data[0]).to.have.property('id');
+          expect(res.body.data[0]).to.have.property('title');
+          expect(res.body.data[0]).to.have.property('avatar');
+          expect(res.body.data[0]).to.have.property('body');
+          expect(res.body.data).to.be.a('array');
+          if (err) return done(err);
+          done();
+        });
+    })
+  })
+
   describe('Delete articles',() => {
     let articleIdToDelete
     

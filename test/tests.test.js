@@ -4,3 +4,5 @@ import './article.test';
 import './follower.test';
 import './comment.test';
 import './bookmark.test';
+import './user.test';
+import './tag.test';
