@@ -52,7 +52,6 @@ export const createArticle = async (req, res) => {
   });
 };
 
-
 /**
  * create a get a single Article
  * @method getSingleArticle
@@ -69,6 +68,29 @@ export const getSingleArticle = async (req, res) => {
   if (!foundArticle) return res.status(404).json({ status: 'failure', error: 'article does not exist' });
 
   return res.status(200).json({ status: 'success', data: foundArticle });
+};
+
+/**
+ * search Articles
+ * @method searchArticle
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
+export const searchArticles = async (req, res) => {
+  const limit = req.query.limit || 4;
+  const { keyword } = req.query;
+
+  const articleAttributes = ['id', 'userId', 'title', 'avatar', 'body'];
+  const articles = await Articles.findAll({
+    attributes: articleAttributes,
+    where: {
+      title: { [Op.iLike]: `%${keyword}%` },
+      status: 'published'
+    },
+    limit
+  });
+  return res.status(200).json({ status: 'success', data: articles });
 };
 
 
@@ -122,7 +144,6 @@ export const getAllArticles = async (req, res) => {
   const page = req.query.page || 1;
   const limit = req.query.limit || 3;
   const offset = limit * (page - 1);
-
 
   const result = await Articles.findAndCountAll({
     where: {
@@ -196,5 +217,6 @@ export default {
   getAllArticles,
   updateArticle,
   getAllArticlesByStatus,
-  deleteArticle
+  deleteArticle,
+  searchArticles
 };

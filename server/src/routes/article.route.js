@@ -8,7 +8,8 @@ import {
   getSingleArticle,
   updateArticle,
   deleteArticle,
-  getAllArticles
+  getAllArticles,
+  searchArticles
 } from '../controllers/article.controller';
 
 const router = Router();
@@ -23,6 +24,7 @@ const {
 
 router.post('/', checkToken, createArticleSchema, validateResult, asyncErrorHandler(createArticle));
 router.get('/', asyncErrorHandler(getAllArticles));
+router.get('/search', asyncErrorHandler(searchArticles));
 router.get('/:id', checkToken, getArticleSchema, validateResult, asyncErrorHandler(getSingleArticle));
 router.patch('/:id', checkToken, updateArticleSchema, validateResult, asyncErrorHandler(updateArticle));
 router.delete('/:id', checkToken, deleteArticleSchema, validateResult, asyncErrorHandler(deleteArticle));
