@@ -3,6 +3,9 @@
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
+	"engines": {
+		"node": "10.*"
+	},
 	"scripts": {
 		"pretest": "NODE_ENV=test npm run undo:migrate:db && NODE_ENV=test npm run migrate:db && NODE_ENV=test npm run seed:db",
 		"test": "NODE_ENV=test  mocha --require @babel/register ./test/tests.test.js  --exit --timeout 10000 ",
@@ -62,8 +65,8 @@
 		"passport-google-oauth20": "^2.0.0",
 		"pg": "^8.0.2",
 		"pg-hstore": "^2.3.3",
-		"sequelize": "^5.21.7",
-		"sequelize-cli": "^5.5.1",
+		"sequelize": "5.21.7",
+		"sequelize-cli": "5.5.1",
 		"swagger-ui-express": "^4.1.4",
 		"uuid": "^7.0.3"
 	},
