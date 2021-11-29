@@ -9,6 +9,7 @@
 		"test:coverage": "nyc --reporter=text --reporter=json --reporter=lcov npm run test",
 		"codecov": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
 		"build": "babel src -d dist",
+		"postbuild": "npm run migrate:db",
 		"start": "node ./dist/server.js",
 		"dev": "nodemon ./src/server.js --exec babel-node",
 		"migrate:db": "sequelize db:migrate",

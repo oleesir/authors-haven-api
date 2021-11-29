@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const { DB_USER, DB_HOST, DB_PASSWORD, DB_NAME, DB_NAME_TEST, DATABASE_URL, DB_DIALECT } = process.env;
+const { DB_USER, DB_HOST, DB_PASSWORD, DB_NAME, DB_NAME_TEST, DB_DIALECT } = process.env;
 
 module.exports = {
 	development: {
@@ -18,7 +18,6 @@ module.exports = {
 		dialect: DB_DIALECT || 'postgres',
 	},
 	production: {
-		dialect: 'postgres',
-		use_env_variable: DATABASE_URL,
+		use_env_variable: 'DATABASE_URL',
 	},
 };
