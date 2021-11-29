@@ -8,9 +8,9 @@
 		"test": "NODE_ENV=test  mocha --require @babel/register ./test/tests.test.js  --exit --timeout 10000 ",
 		"test:coverage": "nyc --reporter=text --reporter=json --reporter=lcov npm run test",
 		"codecov": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-		"build": "babel server/src -d server/dist",
-		"start": "node ./server/dist/connectServer.js",
-		"dev": "nodemon ./server/src/connectServer.js --exec babel-node",
+		"build": "babel src -d dist",
+		"start": "node ./dist/server.js",
+		"dev": "nodemon ./src/server.js --exec babel-node",
 		"migrate:db": "sequelize db:migrate",
 		"migrate:test_db": "NODE_ENV=test sequelize db:migrate",
 		"undo:migrate:db": "sequelize db:migrate:undo:all",
@@ -21,7 +21,7 @@
 	},
 	"nyc": {
 		"exclude": [
-			"server/src/database/*",
+			"src/database/*",
 			"test/tests.test.js",
 			"test"
 		]

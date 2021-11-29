@@ -5,7 +5,7 @@ import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
-import swaggerDocument from '../../swagger.json';
+import swaggerDocument from '../swagger.json';
 import sendError from './middlewares/errorHandler';
 import routes from './routes/index';
 import passportSetup from './helper/passportSetup';
@@ -23,13 +23,9 @@ app.use(cors({ origin: ['http://localhost:3000'], credentials: true }));
 app.use('/api/v1', routes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.get('/', (req, res) =>
-	res.status(200).json({ status: 'success', message: 'Authors Haven API' }),
-);
+app.get('/', (req, res) => res.status(200).json({ status: 'success', message: 'Authors Haven API' }));
 
-app.get('*', (req, res) =>
-	res.status(404).json({ status: 'failure', error: 'Not found' }),
-);
+app.get('*', (req, res) => res.status(404).json({ status: 'failure', error: 'Not found' }));
 app.use(sendError);
 
 export default app;
