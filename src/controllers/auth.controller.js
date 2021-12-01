@@ -35,7 +35,7 @@ export const signupUser = async (req, res) => {
 
 		const newUser = await Users.create({ ...userData });
 
-		const token = cryptoRandomString({ length: 16 });
+		const token = cryptoRandomString({ length: 32 });
 
 		await EmailVerifications.create({
 			userId: newUser.id,
