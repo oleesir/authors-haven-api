@@ -4,23 +4,17 @@ import asyncErrorHandler from '../middlewares/asyncErrorHandler';
 import validateSchema from '../validations/articleSchema';
 import validateResult from '../middlewares/validator.middleware';
 import {
-  createArticle,
-  getSingleArticle,
-  updateArticle,
-  deleteArticle,
-  getAllArticles,
-  searchArticles
+	createArticle,
+	getSingleArticle,
+	updateArticle,
+	deleteArticle,
+	getAllArticles,
+	searchArticles,
 } from '../controllers/article.controller';
 
 const router = Router();
 
-const {
-  createArticleSchema,
-  getArticleSchema,
-  updateArticleSchema,
-  deleteArticleSchema
-} = validateSchema;
-
+const { createArticleSchema, getArticleSchema, updateArticleSchema, deleteArticleSchema } = validateSchema;
 
 router.post('/', checkToken, createArticleSchema, validateResult, asyncErrorHandler(createArticle));
 router.get('/', asyncErrorHandler(getAllArticles));
