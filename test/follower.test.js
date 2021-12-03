@@ -3,8 +3,8 @@ import '@babel/polyfill';
 import { expect } from 'chai';
 import request from 'supertest';
 import app from '../src/app';
-import generateToken from '../server/src/helper/generateToken';
-import models from '../server/src/database/models';
+import generateToken from '../src/helper/generateToken';
+import models from '../src/database/models';
 import {
 	followNewUser,
 	followNewUserOne,

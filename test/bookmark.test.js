@@ -3,7 +3,7 @@ import '@babel/polyfill';
 import { expect } from 'chai';
 import request from 'supertest';
 import app from '../src/app';
-import model from '../server/src/database/models';
+import model from '../src/database/models';
 
 const URL = '/api/v1';
 
