@@ -5,7 +5,7 @@ import models from '../database/models';
 import { sendVerificationEmail, sendForgotPasswordEmail, sendResetPasswordEmail } from '../helper/sendMail';
 import comparePassword from '../helper/comparePassword';
 import getSignupUserData from '../utils/user.utils';
-import { generateToken } from '../helper/generateTokens';
+import { generateToken } from '../helper/generateToken';
 import jwt from 'jsonwebtoken';
 const { Users, EmailVerifications } = models;
 
@@ -69,7 +69,7 @@ export const signinUser = async (req, res) => {
 	});
 
 	if (!foundUser) {
-		return res.status(404).json({ status: 'failure', error: 'user does not exist' });
+		return res.status(404).json({ status: 'failure', error: 'email or password is incorrect' });
 	}
 
 	if (!foundUser.isVerified) {
@@ -121,7 +121,7 @@ export const verifyEmailToken = async (req, res) => {
 	const foundUser = await Users.findOne({ where: { email } });
 
 	if (!foundUser) {
-		return res.status(404).json({ status: 'failure', error: 'user does not exist' }); // user could not be verified
+		return res.status(404).json({ status: 'failure', error: 'user could not be verified' });
 	}
 
 	if (foundUser.isVerified === true) {
@@ -141,19 +141,19 @@ export const verifyEmailToken = async (req, res) => {
 			});
 		}
 
-		if (now > emailVerification.expiresOn) {
-			const newToken = cryptoRandomString({ length: 16 });
+		// if (now > emailVerification.expiresOn) {
+		// 	const newToken = cryptoRandomString({ length: 16 });
 
-			emailVerification.destroy();
-			await EmailVerifications.create({
-				token: newToken,
-				userId: foundUser.id,
-				expiresOn: new Date(Date.now() + 60 * 60 * 24 * 1000),
-			});
-			await sendVerificationEmail(foundUser.email, newToken);
+		// 	emailVerification.destroy();
+		// 	await EmailVerifications.create({
+		// 		token: newToken,
+		// 		userId: foundUser.id,
+		// 		expiresOn: new Date(Date.now() + 60 * 60 * 24 * 1000),
+		// 	});
+		// 	await sendVerificationEmail(foundUser.email, newToken);
 
-			return res.status(404).json({ status: 'failure', error: 'sorry your token has expired' });
-		}
+		// 	return res.status(404).json({ status: 'failure', error: 'sorry your token has expired' });
+		// }
 
 		await Users.update({ isVerified: true }, { where: { email } });
 		await emailVerification.destroy();
@@ -202,7 +202,7 @@ export const forgotPassword = async (req, res) => {
 	if (foundUser) {
 		const addTenMinutes = moment(Date.now()).add(10, 'minutes');
 		const expire = new Date(addTenMinutes);
-		const token = cryptoRandomString({ length: 16 });
+		const token = cryptoRandomString({ length: 32 });
 
 		await Users.update(
 			{
@@ -316,8 +316,21 @@ export const loggedInUser = async (req, res) => {
 		if (err) {
 			return res.json({ status: false, data: null });
 		}
-		res.json({ status: true, data: {} });
+		return res.json({ status: true, data: {} });
 	});
+};
+
+/**
+ * loggedIn
+ * @method logoutUser
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
+export const logoutUser = async (req, res) => {
+	const token = req.cookies.token;
+	if (!token) return res.status(403).json({ status: 'failure', error: 'token not found' });
+	return res.clearCookie('token').status(200).json({ message: 'Successfully logged out' });
 };
 
 export default {
@@ -328,4 +341,5 @@ export default {
 	resetPassword,
 	socialLogin,
 	loggedInUser,
+	logoutUser,
 };

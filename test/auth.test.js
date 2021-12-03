@@ -5,9 +5,9 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import request from 'supertest';
 import app from '../src/app';
-import Mailer from '../server/src/helper/mailer';
-import authController from '../server/src/controllers/auth.controller';
-import model from '../server/src/database/models';
+import Mailer from '../src/helper/mailer';
+import authController from '../src/controllers/auth.controller';
+import model from '../src/database/models';
 
 const { EmailVerifications, Users } = model;
 
@@ -39,8 +39,6 @@ import {
 	resetPasswordEmail,
 	emptyResetPasswordEmail,
 	invalidResetPasswordEmail,
-	unverifiedNewUser,
-	unverifiedAuthUser,
 } from './helper/testData';
 
 const URL = '/api/v1/auth';
@@ -49,7 +47,7 @@ describe('AuthRoutes', () => {
 	let userId;
 	let userEmail;
 
-	describe('SignupRoute', () => {
+	describe.only('SignupRoute', () => {
 		it('should signup new user', (done) => {
 			const sendMailStub = sinon.stub(Mailer, 'send');
 			request(app)
@@ -203,7 +201,7 @@ describe('AuthRoutes', () => {
 				.send(existingEmail)
 				.expect(409)
 				.end((err, res) => {
-					expect(res.body).to.have.property('error').equal('User with that email already exists');
+					expect(res.body).to.have.property('error').equal('email already exist');
 					if (err) return done(err);
 					done();
 				});
@@ -242,6 +240,7 @@ describe('AuthRoutes', () => {
 				.end(async (err, res) => {
 					const sendMailStubArgs = sendMailStub.getCall(0).args[0];
 					sinon.assert.calledOnce(sendMailStub);
+
 					expect(res.body).to.have.property('error').to.equal('sorry your token has expired');
 
 					// check that expiry and token are different
@@ -324,7 +323,7 @@ describe('AuthRoutes', () => {
 		});
 	});
 
-	describe('Login Routes', () => {
+	describe.only('Login Routes', () => {
 		it('should log in an existing user ', (done) => {
 			request(app)
 				.post(`${URL}/signin`)
@@ -414,6 +413,7 @@ describe('AuthRoutes', () => {
 				});
 		});
 	});
+	s;
 
 	describe('Password Routes', () => {
 		describe('ForgotPassword Route', () => {

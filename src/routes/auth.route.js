@@ -8,6 +8,7 @@ import {
 	resetPassword,
 	socialLogin,
 	loggedInUser,
+	logoutUser,
 } from '../controllers/auth.controller';
 import validateResult from '../middlewares/validator.middleware';
 import validateSchema from '../validations/authSchema';
@@ -24,6 +25,7 @@ router.post('/forgotPassword', forgotPasswordSchema, validateResult, asyncErrorH
 router.post('/resetPassword', resetPasswordSchema, validateResult, asyncErrorHandler(resetPassword));
 router.post('/verification', asyncErrorHandler(verifyEmailToken));
 router.get('/loggedin', asyncErrorHandler(loggedInUser));
+router.get('/logout', checkToken, asyncErrorHandler(logoutUser));
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 router.get('/google/redirect', passport.authenticate('google'), asyncErrorHandler(socialLogin));
 
