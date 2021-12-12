@@ -76,7 +76,7 @@
 		"@babel/node": "^7.8.7",
 		"@babel/preset-env": "^7.9.5",
 		"@babel/register": "^7.9.0",
-		"codecov": "^3.7.0",
+		"codecov": "^3.7.1",
 		"jest": "^25.3.0",
 		"mocha": "^7.1.2",
 		"nyc": "^15.0.1",
