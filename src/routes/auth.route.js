@@ -21,8 +21,8 @@ const { signupUserSchema, signinUserSchema, forgotPasswordSchema, resetPasswordS
 
 router.post('/signup', signupUserSchema, validateResult, asyncErrorHandler(signupUser));
 router.post('/signin', signinUserSchema, validateResult, asyncErrorHandler(signinUser));
-router.post('/forgotPassword', forgotPasswordSchema, validateResult, asyncErrorHandler(forgotPassword));
-router.post('/resetPassword', resetPasswordSchema, validateResult, asyncErrorHandler(resetPassword));
+router.post('/forgot_password', forgotPasswordSchema, validateResult, asyncErrorHandler(forgotPassword));
+router.post('/reset_password', resetPasswordSchema, validateResult, asyncErrorHandler(resetPassword));
 router.post('/verification', asyncErrorHandler(verifyEmailToken));
 router.get('/loggedin', asyncErrorHandler(loggedInUser));
 router.get('/logout', checkToken, asyncErrorHandler(logoutUser));

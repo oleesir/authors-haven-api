@@ -1,12 +1,13 @@
 import cryptoRandomString from 'crypto-random-string';
-import { Op } from 'sequelize';
+import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import models from '../database/models';
 import { sendVerificationEmail, sendForgotPasswordEmail, sendResetPasswordEmail } from '../helper/sendMail';
 import comparePassword from '../helper/comparePassword';
 import getSignupUserData from '../utils/user.utils';
 import { generateToken } from '../helper/generateToken';
-import jwt from 'jsonwebtoken';
+import { addMinutes } from 'date-fns';
+
 const { Users, EmailVerifications } = models;
 
 /**
@@ -17,6 +18,8 @@ const { Users, EmailVerifications } = models;
  * @returns {(function|object)} Function next() or JSON object
  */
 export const signupUser = async (req, res) => {
+	const date = new Date();
+	const thirty_mins = addMinutes(date, 30);
 	try {
 		const userData = getSignupUserData(req.body);
 
@@ -40,7 +43,7 @@ export const signupUser = async (req, res) => {
 		await EmailVerifications.create({
 			userId: newUser.id,
 			token: token,
-			expiresOn: new Date(Date.now() + 60 * 60 * 24 * 1000),
+			expiresOn: addMinutes(Date.now(), 30).toISOString(),
 		});
 		await sendVerificationEmail(newUser.email, token);
 
@@ -99,7 +102,7 @@ export const signinUser = async (req, res) => {
 	return res
 		.status(200)
 		.cookie('token', generateToken(payload), {
-			// maxAge: 1000 * 60 * 15,
+			maxAge: 1000 * 60 * 60,
 			secure: false,
 			httpOnly: true,
 			// sameSite: 'lax',
@@ -116,7 +119,6 @@ export const signinUser = async (req, res) => {
  */
 export const verifyEmailToken = async (req, res) => {
 	const { email, token } = req.body;
-	const now = Date.now();
 
 	const foundUser = await Users.findOne({ where: { email } });
 
@@ -141,19 +143,19 @@ export const verifyEmailToken = async (req, res) => {
 			});
 		}
 
-		// if (now > emailVerification.expiresOn) {
-		// 	const newToken = cryptoRandomString({ length: 16 });
+		if (Date.now() > emailVerification.expiresOn) {
+			const newToken = cryptoRandomString({ length: 32 });
 
-		// 	emailVerification.destroy();
-		// 	await EmailVerifications.create({
-		// 		token: newToken,
-		// 		userId: foundUser.id,
-		// 		expiresOn: new Date(Date.now() + 60 * 60 * 24 * 1000),
-		// 	});
-		// 	await sendVerificationEmail(foundUser.email, newToken);
+			emailVerification.destroy();
+			await EmailVerifications.create({
+				token: newToken,
+				userId: foundUser.id,
+				expiresOn: addMinutes(Date.now(), 30).toISOString(),
+			});
+			await sendVerificationEmail(foundUser.email, newToken);
 
-		// 	return res.status(404).json({ status: 'failure', error: 'sorry your token has expired' });
-		// }
+			return res.status(404).json({ status: 'failure', error: 'sorry your token has expired' });
+		}
 
 		await Users.update({ isVerified: true }, { where: { email } });
 		await emailVerification.destroy();
@@ -168,7 +170,7 @@ export const verifyEmailToken = async (req, res) => {
 		return res
 			.status(200)
 			.cookie('token', generateToken(payload), {
-				// maxAge: 1000 * 60 * 15,
+				maxAge: 1000 * 60 * 60,
 				secure: false,
 				httpOnly: true,
 				// sameSite: 'lax',
@@ -190,7 +192,7 @@ export const verifyEmailToken = async (req, res) => {
 export const forgotPassword = async (req, res) => {
 	const { email } = req.body;
 
-	const foundUser = await Users.findOne({ where: { email } });
+	const foundUser = await Users.findOne({ where: { email: email } });
 
 	if (!foundUser) {
 		return res.status(404).json({
@@ -200,8 +202,7 @@ export const forgotPassword = async (req, res) => {
 	}
 
 	if (foundUser) {
-		const addTenMinutes = moment(Date.now()).add(10, 'minutes');
-		const expire = new Date(addTenMinutes);
+		const expire = addMinutes(Date.now(), 30).toISOString();
 		const token = cryptoRandomString({ length: 32 });
 
 		await Users.update(
@@ -229,20 +230,23 @@ export const forgotPassword = async (req, res) => {
  * @returns {(function|object)} Function next() or JSON object
  */
 export const resetPassword = async (req, res) => {
-	const timeNow = moment();
-	const { password } = req.body;
-	const { token } = req.query;
+	const now = Date.now();
+	const { password, token } = req.body;
 
 	const foundUser = await Users.findOne({
 		where: {
 			passwordResetToken: token,
-			passwordTokenExpiry: {
-				[Op.gt]: timeNow,
-			},
 		},
 	});
 
 	if (!foundUser) {
+		return res.status(400).json({
+			status: 'failure',
+			error: 'password reset token is invalid or has expired',
+		});
+	}
+
+	if (now > foundUser.passwordTokenExpiry) {
 		return res.status(400).json({
 			status: 'failure',
 			error: 'password reset token is invalid or has expired',
@@ -255,7 +259,7 @@ export const resetPassword = async (req, res) => {
 		passwordTokenExpiry: null,
 	});
 
-	await sendResetPasswordEmail(foundUser.email);
+	// await sendResetPasswordEmail(foundUser.email);
 
 	return res.status(200).json({ status: 'success', message: 'password reset successful' });
 };

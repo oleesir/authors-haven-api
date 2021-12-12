@@ -8,6 +8,7 @@ import app from '../src/app';
 import Mailer from '../src/helper/mailer';
 import authController from '../src/controllers/auth.controller';
 import model from '../src/database/models';
+import { addMinutes, subMinutes } from 'date-fns';
 
 const { EmailVerifications, Users } = model;
 
@@ -47,7 +48,7 @@ describe('AuthRoutes', () => {
 	let userId;
 	let userEmail;
 
-	describe.only('SignupRoute', () => {
+	describe('SignupRoute', () => {
 		it('should signup new user', (done) => {
 			const sendMailStub = sinon.stub(Mailer, 'send');
 			request(app)
@@ -211,7 +212,6 @@ describe('AuthRoutes', () => {
 	describe('Verification Routes', () => {
 		let userToken;
 		let userEmailVerification;
-		const fiveMinutesAgo = moment(Date.now()).subtract(5, 'minutes');
 
 		before(async () => {
 			userEmailVerification = await EmailVerifications.findOne({
@@ -221,22 +221,56 @@ describe('AuthRoutes', () => {
 			});
 
 			userToken = userEmailVerification.token;
+		});
 
-			// expire token
-			await userEmailVerification.update({
-				expiresOn: fiveMinutesAgo,
-			});
+		it('should not verify a user with an invalid token', (done) => {
+			request(app)
+				.post(`${URL}/verification`)
+				.expect(404)
+				.send({ token: invalidEmailToken, email: userEmail })
+				.end((err, res) => {
+					expect(res.body)
+						.to.have.property('error')
+						.to.equal('email verification failed. Your token might be expired or invalid');
+					if (err) return done(err);
+					done();
+				});
+		});
+
+		it('should verify a user with a valid verification token', (done) => {
+			request(app)
+				.post(`${URL}/verification`)
+				.send({ token: userToken, email: userEmail })
+				.expect(200)
+				.end((err, res) => {
+					expect(res.body.data).to.have.property('id');
+					expect(res.body.data).to.have.property('firstName');
+					expect(res.body.data).to.have.property('lastName');
+					expect(res.body.data).to.have.property('email');
+					expect(res.body.data).to.have.property('role');
+					expect(res.body.data).to.have.property('isVerified').to.equal(true);
+					if (err) return done(err);
+					done();
+				});
 		});
 
 		it(`should not verify a user with an expired token
-        and should create another token after deleting the previous one`, (done) => {
+		    and should create another token after deleting the previous one`, async () => {
+			const date = Date.now();
+			const fiveMinutesAgo = subMinutes(date, 5);
+
+			await userEmailVerification.update({
+				expiresOn: fiveMinutesAgo,
+			});
+
 			const sendMailStub = sinon.stub(Mailer, 'send');
 			const previousToken = userEmailVerification.token;
-			expect(userEmailVerification.expiresOn).to.eql(new Date(fiveMinutesAgo));
+			expect(userEmailVerification.expiresOn).to.eql(fiveMinutesAgo);
 
 			request(app)
-				.get(`${URL}/verification?token=${userToken}&email=${userEmail}`)
+				.post(`${URL}/verification`)
 				.expect(404)
+				.send({ token: userToken, email: userEmail })
 				.end(async (err, res) => {
 					const sendMailStubArgs = sendMailStub.getCall(0).args[0];
 					sinon.assert.calledOnce(sendMailStub);
@@ -252,46 +286,23 @@ describe('AuthRoutes', () => {
 
 					userToken = userEmailVerification.token;
 
-					expect(userEmailVerification.expiresOn).to.not.equal(new Date(fiveMinutesAgo));
+					expect(userEmailVerification.expiresOn).to.not.equal(fiveMinutesAgo);
 					expect(userToken).to.not.equal(previousToken);
 					expect(sendMailStubArgs.subject).to.equal('Confirm Email');
 					expect(sendMailStubArgs.text).to.contain('&email=ryan@gmail.com');
 					expect(sendMailStubArgs.to).to.equal('ryan@gmail.com');
 					sinon.restore();
 
-					if (err) return done(err);
-					done();
-				});
-		});
-
-		it('should not verify a user with an invalid token', (done) => {
-			request(app)
-				.get(`${URL}/verification?token=${invalidEmailToken}&email=${userEmail}`)
-				.expect(404)
-				.end((err, res) => {
-					expect(res.body)
-						.to.have.property('error')
-						.to.equal('email verification failed. Your token might be expired or invalid');
-					if (err) return done(err);
-					done();
-				});
-		});
-
-		it('should verify a user with a valid verification token', (done) => {
-			request(app)
-				.get(`${URL}/verification?token=${userToken}&email=${userEmail}`)
-				.expect(200)
-				.end((err, res) => {
-					expect(res.body).to.have.property('message').to.equal('email has been successfully verified');
-					if (err) return done(err);
-					done();
+					// if (err) return done(err);
+					// done();
 				});
 		});
 
 		it('should not reverify a user who has already been verified', (done) => {
 			request(app)
-				.get(`${URL}/verification?token=${userToken}&email=${userEmail}`)
+				.post(`${URL}/verification`)
 				.expect(409)
+				.send({ token: userToken, email: userEmail })
 				.end((err, res) => {
 					expect(res.body).to.have.property('error').to.equal('your email has been verified already');
 					if (err) return done(err);
@@ -301,29 +312,18 @@ describe('AuthRoutes', () => {
 
 		it('should not verify a user who does not exist on the platform', (done) => {
 			request(app)
-				.get(`${URL}/verification?token=${userToken}&email=${unexistingUserEmail}`)
+				.post(`${URL}/verification`)
 				.expect(404)
+				.send({ token: userToken, email: unexistingUserEmail })
 				.end((err, res) => {
-					expect(res.body).to.have.property('error').to.equal('user does not exist');
-					if (err) return done(err);
-					done();
-				});
-		});
-
-		it('should not register a new user with an already existing email', (done) => {
-			request(app)
-				.post(`${URL}/signup`)
-				.send(existingEmail)
-				.expect(409)
-				.end((err, res) => {
-					expect(res.body).to.have.property('error').to.equal('User with that email already exists');
+					expect(res.body).to.have.property('error').to.equal('user could not be verified');
 					if (err) return done(err);
 					done();
 				});
 		});
 	});
 
-	describe.only('Login Routes', () => {
+	describe('Login Routes', () => {
 		it('should log in an existing user ', (done) => {
 			request(app)
 				.post(`${URL}/signin`)
@@ -383,7 +383,7 @@ describe('AuthRoutes', () => {
 				.send(wrongEmail)
 				.expect(404)
 				.end((err, res) => {
-					expect(res.body).to.have.property('error').equal('user does not exist');
+					expect(res.body).to.have.property('error').equal('email or password is incorrect');
 					if (err) return done(err);
 					done();
 				});
@@ -413,14 +413,13 @@ describe('AuthRoutes', () => {
 				});
 		});
 	});
-	s;
 
 	describe('Password Routes', () => {
 		describe('ForgotPassword Route', () => {
 			it('should send reset password mail', (done) => {
 				const sendMailStub = sinon.stub(Mailer, 'send');
 				request(app)
-					.post(`${URL}/forgotPassword`)
+					.post(`${URL}/forgot_password`)
 					.send(forgetPasswordEmail)
 					.expect(202)
 					.end((err, res) => {
@@ -437,7 +436,7 @@ describe('AuthRoutes', () => {
 
 			it('should not send reset password mail to none existing user', (done) => {
 				request(app)
-					.post(`${URL}/forgotPassword`)
+					.post(`${URL}/forgot_password`)
 					.send(nonExistingforgetPasswordEmail)
 					.expect(404)
 					.end((err, res) => {
@@ -449,7 +448,7 @@ describe('AuthRoutes', () => {
 
 			it('should return validation errors for invalid email', (done) => {
 				request(app)
-					.post(`${URL}/forgotPassword`)
+					.post(`${URL}/forgot_password`)
 					.send(invalidForgetPasswordEmail)
 					.expect(400)
 					.end((err, res) => {

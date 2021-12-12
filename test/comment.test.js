@@ -32,7 +32,7 @@ describe('Comments', () => {
 			request(app)
 				.post(`${URL}/comments`)
 				.send(newComment)
-				.set('Authorization', `Bearer ${userToken}`)
+				.set('Cookie', `token=${userToken}`)
 				.expect(201)
 				.end((err, res) => {
 					expect(res.body.data).to.have.property('id');
@@ -49,7 +49,7 @@ describe('Comments', () => {
 			request(app)
 				.post(`${URL}/comments`)
 				.send(newComment)
-				.set('Authorization', `Bearer ${''}`)
+				.set('Cookie', `token=${''}`)
 				.expect(401)
 				.end((err, res) => {
 					expect(res.body).to.have.property('error').to.equal('please provide a token');
@@ -64,7 +64,7 @@ describe('Comments', () => {
 			request(app)
 				.post(`${URL}/comments/${commentId}/replies`)
 				.send(newReplyComment)
-				.set('Authorization', `Bearer ${userToken}`)
+				.set('Cookie', `token=${userToken}`)
 				.expect(201)
 				.end((err, res) => {
 					expect(res.body.data).to.have.property('id');
@@ -81,7 +81,7 @@ describe('Comments', () => {
 			request(app)
 				.post(`${URL}/comments/${commentId}/replies`)
 				.send(newReplyComment)
-				.set('Authorization', `Bearer ${''}`)
+				.set('Cookie', `token=${''}`)
 				.expect(401)
 				.end((err, res) => {
 					expect(res.body).to.have.property('error').to.equal('please provide a token');
@@ -96,7 +96,7 @@ describe('Comments', () => {
 			request(app)
 				.patch(`${URL}/comments/${updateId}`)
 				.send(updateReplyComment)
-				.set('Authorization', `Bearer ${leeUpdateToken}`)
+				.set('Cookie', `token=${leeUpdateToken}`)
 				.expect(200)
 				.end((err, res) => {
 					expect(res.body.data).to.have.property('id');
@@ -113,7 +113,7 @@ describe('Comments', () => {
 			request(app)
 				.patch(`${URL}/comments/${updateId}`)
 				.send(updateReplyComment)
-				.set('Authorization', `Bearer ${''}`)
+				.set('Cookie', `token=${''}`)
 				.expect(401)
 				.end((err, res) => {
 					expect(res.body).to.have.property('error').to.equal('please provide a token');
@@ -151,7 +151,7 @@ describe('Comments', () => {
 		it('should delete a comment', (done) => {
 			request(app)
 				.delete(`${URL}/comments/${deleteComment}`)
-				.set('Authorization', `Bearer ${deleteToken}`)
+				.set('Cookie', `token=${deleteToken}`)
 				.expect(200)
 				.end((err, res) => {
 					expect(res.body).to.have.property('message').equal('successfully deleted comment');
