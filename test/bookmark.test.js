@@ -17,7 +17,7 @@ describe('Bookmarks', () => {
 			request(app)
 				.post(`${URL}/bookmarks`)
 				.send(bookmarkArticle)
-				.set('Authorization', `Bearer ${userToken}`)
+				.set('Cookie', `token=${userToken}`)
 				.expect(201)
 				.end((err, res) => {
 					expect(res.body.data).to.have.property('id');
@@ -33,7 +33,7 @@ describe('Bookmarks', () => {
 		it('should get a bookmark an article for a verified author', (done) => {
 			request(app)
 				.get(`${URL}/bookmarks/${getBookmarkId}`)
-				.set('Authorization', `Bearer ${userTokenThree}`)
+				.set('Cookie', `token=${userTokenThree}`)
 				.expect(200)
 				.end((err, res) => {
 					expect(res.body.data).to.have.property('id');
@@ -47,7 +47,7 @@ describe('Bookmarks', () => {
 		it('should get all bookmarked article for a verified author', (done) => {
 			request(app)
 				.get(`${URL}/bookmarks`)
-				.set('Authorization', `Bearer ${userTokenThree}`)
+				.set('Cookie', `token=${userTokenThree}`)
 				.expect(200)
 				.end((err, res) => {
 					expect(res.body).to.have.property('status').eql('success');
@@ -61,7 +61,7 @@ describe('Bookmarks', () => {
 		it('should get a bookmark an article for a verified author', (done) => {
 			request(app)
 				.delete(`${URL}/bookmarks/${deleteBookmarkId}`)
-				.set('Authorization', `Bearer ${userTokenThree}`)
+				.set('Cookie', `token=${userTokenThree}`)
 				.expect(200)
 				.end((err, res) => {
 					expect(res.body)

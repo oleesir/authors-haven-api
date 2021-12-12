@@ -3,7 +3,7 @@ import '@babel/polyfill';
 import { expect } from 'chai';
 import request from 'supertest';
 import app from '../src/app';
-import generateToken from '../src/helper/generateToken';
+import { generateToken } from '../src/helper/generateToken';
 import models from '../src/database/models';
 import {
 	followNewUser,
@@ -120,7 +120,7 @@ describe('Followers', () => {
 			request(app)
 				.post(`${URL}/follow`)
 				.send(newUser)
-				.set('Authorization', `Bearer ${userToken}`)
+				.set('Cookie', `token=${userToken}`)
 				.expect(201)
 				.end((err, res) => {
 					expect(res.body.data).to.have.property('id');
@@ -139,7 +139,7 @@ describe('Followers', () => {
 			request(app)
 				.post(`${URL}/follow`)
 				.send(newUser)
-				.set('Authorization', `Bearer ${userTokenThree}`)
+				.set('Cookie', `token=${userTokenThree}`)
 				.expect(201)
 				.end((err, res) => {
 					expect(res.body.data).to.have.property('id');
@@ -158,7 +158,7 @@ describe('Followers', () => {
 			request(app)
 				.post(`${URL}/follow`)
 				.send(newUser)
-				.set('Authorization', `Bearer ${userToken}`)
+				.set('Cookie', `token=${userToken}`)
 				.expect(403)
 				.end((err, res) => {
 					expect(res.body).to.have.property('error').equal('you cannot follow yourself');
@@ -174,7 +174,7 @@ describe('Followers', () => {
 			request(app)
 				.post(`${URL}/follow`)
 				.send(newUser)
-				.set('Authorization', `Bearer ${userToken}`)
+				.set('Cookie', `token=${userToken}`)
 				.expect(401)
 				.end((err, res) => {
 					expect(res.body).to.have.property('error').equal('user is not verified');
@@ -190,7 +190,7 @@ describe('Followers', () => {
 			request(app)
 				.post(`${URL}/follow`)
 				.send(newUser)
-				.set('Authorization', `Bearer ${userToken}`)
+				.set('Cookie', `token=${userToken}`)
 				.expect(401)
 				.end((err, res) => {
 					expect(res.body).to.have.property('error').equal('user is not verified');
@@ -203,7 +203,7 @@ describe('Followers', () => {
 			request(app)
 				.post(`${URL}/follow`)
 				.send(nonexistingAuthor)
-				.set('Authorization', `Bearer ${userToken}`)
+				.set('Cookie', `token=${userToken}`)
 				.expect(404)
 				.end((err, res) => {
 					expect(res.body).to.have.property('error').equal('user does not exist on the app');
@@ -216,7 +216,7 @@ describe('Followers', () => {
 			request(app)
 				.post(`${URL}/follow`)
 				.send(nonexistingAuthor)
-				.set('Authorization', `Bearer ${''}`)
+				.set('Cookie', `token=${''}`)
 				.expect(401)
 				.end((err, res) => {
 					expect(res.body).to.have.property('error').equal('please provide a token');
@@ -229,7 +229,7 @@ describe('Followers', () => {
 			request(app)
 				.post(`${URL}/follow`)
 				.send(emptyfollowId)
-				.set('Authorization', `Bearer ${userToken}`)
+				.set('Cookie', `token=${userToken}`)
 				.expect(400)
 				.end((err, res) => {
 					expect(res.body.error).to.have.property('followId').equal('followId field cannot be left blank');
@@ -242,7 +242,7 @@ describe('Followers', () => {
 			request(app)
 				.post(`${URL}/follow`)
 				.send(invalidfollowId)
-				.set('Authorization', `Bearer ${userToken}`)
+				.set('Cookie', `token=${userToken}`)
 				.expect(400)
 				.end((err, res) => {
 					expect(res.body.error).to.have.property('followId').equal('invalid id');
@@ -256,7 +256,7 @@ describe('Followers', () => {
 		it('should get authors the user is following', (done) => {
 			request(app)
 				.get(`${URL}/follow/following`)
-				.set('Authorization', `Bearer ${userToken}`)
+				.set('Cookie', `token=${userToken}`)
 				.expect(200)
 				.end((err, res) => {
 					expect(res.body).to.have.property('status').equal('success');
@@ -268,7 +268,7 @@ describe('Followers', () => {
 		it('should get followers of the author', (done) => {
 			request(app)
 				.get(`${URL}/follow/followers`)
-				.set('Authorization', `Bearer ${userToken}`)
+				.set('Cookie', `token=${userToken}`)
 				.expect(200)
 				.end((err, res) => {
 					expect(res.body).to.have.property('status').equal('success');
@@ -282,7 +282,7 @@ describe('Followers', () => {
 		it('should unfollow a verified author', (done) => {
 			request(app)
 				.delete(`${URL}/follow/${userIdOne}`)
-				.set('Authorization', `Bearer ${userToken}`)
+				.set('Cookie', `token=${userToken}`)
 				.expect(200)
 				.end((err, res) => {
 					expect(res.body).to.have.property('message').to.eql('successfully unfollowed author');
@@ -294,7 +294,7 @@ describe('Followers', () => {
 		it('should not allow unfollow an author without a token', (done) => {
 			request(app)
 				.delete(`${URL}/follow/${userIdOne}`)
-				.set('Authorization', `Bearer ${''}`)
+				.set('Cookie', `token=${''}`)
 				.expect(401)
 				.end((err, res) => {
 					expect(res.body).to.have.property('error').to.equal('please provide a token');
@@ -306,7 +306,7 @@ describe('Followers', () => {
 		it('should not allow unfollow an author without a token', (done) => {
 			request(app)
 				.delete(`${URL}/follow/${userIdOne}`)
-				.set('Authorization', `Bearer ${''}`)
+				.set('Cookie', `token=${''}`)
 				.expect(401)
 				.end((err, res) => {
 					expect(res.body).to.have.property('error').to.equal('please provide a token');
@@ -318,7 +318,7 @@ describe('Followers', () => {
 		it('should not allow an author to unfollow an unexisting author', (done) => {
 			request(app)
 				.delete(`${URL}/follow/${unknownUserId}`)
-				.set('Authorization', `Bearer ${userToken}`)
+				.set('Cookie', `token=${userToken}`)
 				.expect(404)
 				.end((err, res) => {
 					expect(res.body).to.have.property('error').to.equal('user does not exist on the app');
