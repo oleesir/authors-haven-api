@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 passportSetup(passport);
 
-app.use(cors({ origin: ['http://localhost:3000'], credentials: true }));
+app.use(cors({ origin: ['http://localhost:3000', 'https://authors-haven-react.herokuapp.com/'], credentials: true }));
 app.use('/api/v1', routes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
