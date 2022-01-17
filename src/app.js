@@ -9,20 +9,23 @@ import swaggerDocument from '../swagger.json';
 import sendError from './middlewares/errorHandler';
 import routes from './routes/index';
 import passportSetup from './helper/passportSetup';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 
-const allowOrigins = ['http://localhost:3000', 'https://authors-haven-react.herokuapp.com'];
-const corsOptions = {
-	credentials: true,
-	origin: (origin, callback) => {
-		if (allowOrigins.indexOf(origin) !== -1) {
-			callback(null, true);
-		} else {
-			callback(new Error('Not allowed by CORS'));
-		}
-	},
-};
+// const allowOrigins = ['http://localhost:3000', 'https://authors-haven-react.herokuapp.com'];
+// const corsOptions = {
+// 	credentials: true,
+// 	origin: (origin, callback) => {
+// 		if (allowOrigins.indexOf(origin) !== -1) {
+// 			callback(null, true);
+// 		} else {
+// 			callback(new Error('Not allowed by CORS'));
+// 		}
+// 	},
+// };
 
 app.use(cookieParser());
 
@@ -34,7 +37,9 @@ app.use(passport.initialize());
 
 passportSetup(passport);
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+
+app.use(cors());
 
 app.use('/api/v1', routes);
 

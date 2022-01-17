@@ -5,11 +5,11 @@
  * @return {(error|bool)} returns error or true
  */
 function notEmpty(value, msg) {
-  if (value === '') {
-    throw new Error(msg);
-  }
+	if (value === '') {
+		throw new Error(msg);
+	}
 
-  return true;
+	return true;
 }
 
 export default notEmpty;

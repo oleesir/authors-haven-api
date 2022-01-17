@@ -1,6 +1,9 @@
 import { Op } from 'sequelize';
-
 import models from '../database/models';
+
+import cloudinary from 'cloudinary';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const { Articles, Users, Tags } = models;
 /**
@@ -11,8 +14,18 @@ const { Articles, Users, Tags } = models;
  * @returns {(function|object)} Function next() or JSON object
  */
 export const createArticle = async (req, res) => {
+	const { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } = process.env;
+
+	cloudinary.v2.config({
+		cloud_name: CLOUDINARY_CLOUD_NAME,
+		api_key: CLOUDINARY_API_KEY,
+		api_secret: CLOUDINARY_API_SECRET,
+		secure: true,
+	});
+
+	let imageFiles = req.files;
 	const { id: userId } = req.decoded;
-	const { tags } = req.body;
+	const { tags, title, body } = req.body;
 
 	const findOrCreatePromise = tags.map(async (tag) => {
 		const [foundOrCreated] = await Tags.findOrCreate({
@@ -27,9 +40,18 @@ export const createArticle = async (req, res) => {
 
 	const foundOrCreatedTags = await Promise.all(findOrCreatePromise);
 
+	let multipleImages = imageFiles.map(async (imageFile) => {
+		const response = await cloudinary.v2.uploader.upload(imageFile.path);
+		return response.secure_url;
+	});
+
+	let imageResponses = await Promise.all(multipleImages);
+
 	const articleInstance = await Articles.create({
-		...req.body,
+		body: body,
+		title: title,
 		userId,
+		avatar: imageResponses,
 	});
 
 	await articleInstance.addTags(foundOrCreatedTags);
@@ -66,9 +88,7 @@ export const getSingleArticle = async (req, res) => {
 	const foundArticle = await Articles.findOne({ where: { id, userId } });
 
 	if (!foundArticle) {
-		return res
-			.status(404)
-			.json({ status: 'failure', error: 'article does not exist' });
+		return res.status(404).json({ status: 'failure', error: 'article does not exist' });
 	}
 
 	return res.status(200).json({ status: 'success', data: foundArticle });
@@ -115,15 +135,11 @@ export const getAllArticlesByStatus = async (req, res) => {
 	const foundUser = await Users.findOne({ where: { id } });
 
 	if (!foundUser) {
-		return res
-			.status(404)
-			.json({ status: 'failure', error: 'user does not exist' });
+		return res.status(404).json({ status: 'failure', error: 'user does not exist' });
 	}
 
 	if (foundUser.id !== userId) {
-		return res
-			.status(401)
-			.json({ status: 'failure', error: 'you not authorized' });
+		return res.status(401).json({ status: 'failure', error: 'you not authorized' });
 	}
 
 	const { count, rows: articles } = await Articles.findAndCountAll({
@@ -194,9 +210,7 @@ export const updateArticle = async (req, res) => {
 	const foundArticle = await Articles.findOne({ where: { id, userId } });
 
 	if (!foundArticle) {
-		return res
-			.status(404)
-			.json({ status: 'failure', error: 'article does not exist' });
+		return res.status(404).json({ status: 'failure', error: 'article does not exist' });
 	}
 
 	const updatedArticle = await foundArticle.update({
@@ -221,16 +235,12 @@ export const deleteArticle = async (req, res) => {
 	const foundArticle = await Articles.findOne({ where: { id, userId } });
 
 	if (!foundArticle) {
-		return res
-			.status(404)
-			.json({ status: 'failure', error: 'article does not exist' });
+		return res.status(404).json({ status: 'failure', error: 'article does not exist' });
 	}
 
 	await foundArticle.destroy();
 
-	return res
-		.status(200)
-		.json({ status: 'success', message: 'article was deleted successfully' });
+	return res.status(200).json({ status: 'success', message: 'article was deleted successfully' });
 };
 
 export default {
